@@ -10,11 +10,11 @@ words=lines.split()
 
 if words[0]=="cmp":
 	machine_code_cmp+=opcode_dic["cmp"]
-    newl=[]
+    	newl=[]
 	for i in range(1,3):
 		key_r=words[i][3]
 		machine_code_cmp+=reg_dic[key_r]
-        newl.append(key_r)
+        	newl.append(key_r)
     #if newl[0]==newl[1]:flag
         
 
