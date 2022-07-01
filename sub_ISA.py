@@ -12,6 +12,7 @@ words=lines.split()
 if words[0]=="sub":
  	key_o=words[0]
  	machine_code_sub+=opcode_dic[key]
+	machine_code_sub+="00"
 
  	for i in range(1,4):
  		key_r=words[i][3]
