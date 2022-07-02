@@ -33,7 +33,6 @@ with open('trial.txt') as f:
     for i in new:
         l = i.split()
         inp.append(l)
-    print(inp)
 
 for i in range(len(inp)):
     if inp[i][0].lower() in type_a:
