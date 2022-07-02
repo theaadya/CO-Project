@@ -100,7 +100,7 @@ if flag == False:
                     if len(inst_lst[i][3])==8 and check_bin(inst_lst[i][3]):
                          op = type_d[inst_lst[i][1]]
                          machine_code.append(op + reg[inst_lst[i][2]] + inst_lst[i][3])
-                         # condition to check if mem_addr is accessible n acceptable (?)
+                         # condition to check if mem_addr is accessible (?)
                     else:
                         with open("output.txt", "a") as f:
                             flag=True
@@ -119,7 +119,11 @@ if flag == False:
                 if len(inst_lst[i][2]) == 8:
                     op = type_e[inst_lst[i][1]]
                     machine_code.append(op+"000"+inst_lst[i][1])
-                # condition to check if mem_addr is accessible n acceptable (?)
+                # condition to check if mem_addr is accessible (?)
+                else:
+                    with open("output.txt", "a") as f:
+                        flag=True
+                        f.write(f'Error in line: Memory address is not accessible/acceptable')   
             else:
                 with open("output.txt", "a") as f:
                     f.write(f'Error in line: Wrong format of instruction')
