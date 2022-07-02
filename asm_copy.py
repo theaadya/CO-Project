@@ -17,12 +17,12 @@ vars_count = 0      # for counting variables
 flag = False        # for error checking, true if error present
 
 def check_bin(check_str):
-          flag=True
-          for i in range(len(check_str)):
-                  if i not in "01":
-                    flag=False
-                    break
-           return flag
+    flag = False
+    for i in range(len(check_str)):
+        if i not in "01":
+            flag = True
+            break
+    return flag
 
 def parse_vars(lst, vars_dict, PC, vars_count):
     for i in lst:
@@ -70,12 +70,14 @@ if flag == False:
                     machine_code.append(op+"00"+r1+r2+r3)
                 else:
                     with open("output.txt", "a") as f:
-                        f.write(f'Error in line: Undefined Register Name')
                         flag = True
+                        f.write(f'Error in line: Undefined Register Name')
             else:
-                print(f'Error in line: Wrong format of instruction')
                 flag = True
-        #elif inst_lst[i][1].lower() in type_b:
+                f.write(f'Error in line: Wrong format of instruction')
+
+        # elif inst_lst[i][1].lower() in type_b:
+
         elif inst_lst[i][1].lower() in type_c:
             if len(inst_lst[i]) == 4:
                 if inst_lst[i][2].lower() in reg and inst_lst[i][3].lower() in reg:
@@ -85,40 +87,39 @@ if flag == False:
                     machine_code.append(op+"00000"+r1+r2)
                 else:
                     with open("output.txt", "a") as f:
-                        f.write(f'Error in line: Undefined Register Name')
                         flag = True
+                        f.write(f'Error in line: Undefined Register Name')
             else:
                 with open("output.txt", "a") as f:
-                    f.write(f'Error in line: Wrong format of instruction')
                     flag = True
+                    f.write(f'Error in line: Wrong format of instruction')
+
         elif inst_lst[i][1].lower() in type_d:
-            if len(inst_lst[i])==4:
+            if len(inst_lst[i]) == 4:
                 if inst_lst[i][2].lower() in reg:
                     if len(inst_lst[i][3])==8 and check_bin(inst_lst[i][3]):
                          op = type_d[inst_lst[i][1]]
                          machine_code.append(op + reg[inst_lst[i][2]] + inst_lst[i][3])
-                    else:                             
-                             with open('output.txt', 'a') as f:
-                                        flag=True
-                                        f.write(f'Error in line: Memory address is not accessible or acceptable')
-                         
+                         # condition to check if mem_addr is accessible n acceptable (?)
+                    else:
+                        with open("output.txt", "a") as f:
+                            flag=True
+                            f.write(f'Error in line: Memory address is not accessible/acceptable')   
                 else:
                     with open("output.txt", "a") as f:
-                              flag=True
-                              f.write(f'Error in line: Undefined register name')
+                        flag=True
+                        f.write(f'Error in line: Undefined register name')
             else:
                 with open("output.txt", "a") as f:
                     flag=True
                     f.write(f'Error in line: Wrong format of instruction')
+
         elif inst_lst[i][1].lower() in type_e:
             if len(inst_lst[i]) == 3:
-                if len(inst_lst[i][2])==8 and check_bin(inst_lst[i][2]):
+                if len(inst_lst[i][2]) == 8:
                     op = type_e[inst_lst[i][1]]
                     machine_code.append(op+"000"+inst_lst[i][1])
-                else:
-                    with open('output.txt', 'a') as f:
-                              flag=True
-                              f.write(f'Error in line: Memory address is not accessible or acceptable')
+                # condition to check if mem_addr is accessible n acceptable (?)
             else:
                 with open("output.txt", "a") as f:
                     f.write(f'Error in line: Wrong format of instruction')
