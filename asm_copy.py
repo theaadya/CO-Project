@@ -92,14 +92,12 @@ if flag == False:
                     f.write(f'Error in line: Wrong format of instruction')
                     flag = True
         elif inst_lst[i][1].lower() in type_d:
-            if len(inst_lst[i]) == 4:
-                if inst_list[i][2].lower() in reg:
-                    if len(inst_list[i][3])==8 and check_bin(inst_list[i][3]):
+            if len(inst_lst[i])==4:
+                if inst_lst[i][2].lower() in reg:
+                    if len(inst_lst[i][3])==8 and check_bin(inst_lst[i][3]):
                          op = type_d[inst_lst[i][1]]
                          machine_code.append(op + reg[inst_lst[i][2]] + inst_lst[i][3])
-                         # condition to check if mem_addr is accessible n acceptable (?)
-                    else:
-                                                         
+                    else:                             
                              with open('output.txt', 'a') as f:
                                         flag=True
                                         f.write(f'Error in line: Memory address is not accessible or acceptable')
@@ -114,10 +112,13 @@ if flag == False:
                     f.write(f'Error in line: Wrong format of instruction')
         elif inst_lst[i][1].lower() in type_e:
             if len(inst_lst[i]) == 3:
-                if len(inst_lst[i][2]) == 8:
+                if len(inst_lst[i][2])==8 and check_bin(inst_lst[i][2]):
                     op = type_e[inst_lst[i][1]]
                     machine_code.append(op+"000"+inst_lst[i][1])
-                # condition to check if mem_addr is accessible n acceptable (?)
+                else:
+                    with open('output.txt', 'a') as f:
+                              flag=True
+                              f.write(f'Error in line: Memory address is not accessible or acceptable')
             else:
                 with open("output.txt", "a") as f:
                     f.write(f'Error in line: Wrong format of instruction')
