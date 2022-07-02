@@ -1,7 +1,7 @@
 # make changes in this file
 
 PC = 00000000
-type_a = {"add": "10000", "sub": "10001", "mul": "10110", "xor": "11010", "or": "11011", "and": "11100", }
+type_a = {"add": "10000", "sub": "10001", "mul": "10110", "xor": "11010", "or": "11011", "and": "11100"}
 type_c = {"div": "10111"}
 type_e = {"jmp": "11111", "jlt": "01100"}
 reg = {"r1": "000", "r2": "001", "r3": "010", "r4":"011"}
@@ -20,52 +20,51 @@ def parse_vars(lst, vars_dict, PC, count):
 
 
 with open('trial.txt') as f:
-    new = f.readlines()
-    c = new.count("\n")
+    lst1 = f.readlines()
+    c = lst1.count("\n")
     for i in range(c):
-        new.remove("\n")
-    for i in range(len(new)):
-        new[i] = " ".join(new[i].split())
+        lst1.remove("\n")
+    for i in range(len(lst1)):
+        lst1[i] = " ".join(lst1[i].split())
 
-    parse_vars(new, vars, PC, count)
+    parse_vars(lst1, vars, PC, count)
 
-    inp = []
-    for i in new:
+    inst_lst = []
+    for i in lst1:
         l = i.split()
-        inp.append(l)
-    print(inp)
+        inst_lst.append(l)
 
-for i in range(len(inp)):
-    if inp[i][0].lower() in type_a:
-        if len(inp[i]) == 4:
-            if inp[i][1].lower() in reg and inp[i][2].lower() in reg and inp[i][3].lower() in reg:
-                op = type_a[inp[i][0]]
-                r1 = reg[inp[i][1].lower()]
-                r2 = reg[inp[i][2].lower()]
-                r3 = reg[inp[i][3].lower()]
+for i in range(len(inst_lst)):
+    if inst_lst[i][0].lower() in type_a:
+        if len(inst_lst[i]) == 4:
+            if inst_lst[i][1].lower() in reg and inst_lst[i][2].lower() in reg and inst_lst[i][3].lower() in reg:
+                op = type_a[inst_lst[i][0]]
+                r1 = reg[inst_lst[i][1].lower()]
+                r2 = reg[inst_lst[i][2].lower()]
+                r3 = reg[inst_lst[i][3].lower()]
                 print(op+"00"+r1+r2+r3)
             else:
                 print(f'Error in line: Undefined Register Name')
         else:
             print(f'Error in line: Wrong format of instruction')
-    elif inp[i][0].lower() in type_c:
-        if len(inp[i]) == 3:
-            if inp[i][1].lower() in reg and inp[i][2].lower() in reg:
-                op = type_c[inp[0]]
-                r1 = reg[inp[i][1].lower()]
-                r2 = reg[inp[i][2].lower()]
+    elif inst_lst[i][0].lower() in type_c:
+        if len(inst_lst[i]) == 3:
+            if inst_lst[i][1].lower() in reg and inst_lst[i][2].lower() in reg:
+                op = type_c[inst_lst[0]]
+                r1 = reg[inst_lst[i][1].lower()]
+                r2 = reg[inst_lst[i][2].lower()]
                 print(op+"00000"+r1+r2)
             else:
                 print(f'Error in line: Undefined Register Name')
         else:
             print(f'Error in line: Wrong format of instruction')
-    elif inp[i][0].lower() in type_e:
-        if len(inp[i]) == 2:
-            if len(inp[i][1]) == 8:
-                op = type_e[inp[i][0]]
-                print(op+"000"+inp[i][1])
+    elif inst_lst[i][0].lower() in type_e:
+        if len(inst_lst[i]) == 2:
+            if len(inst_lst[i][1]) == 8:
+                op = type_e[inst_lst[i][0]]
+                print(op+"000"+inst_lst[i][1])
             ## condition to check if mem_addr is accessible n acceptable (?)
         else:
             print(f'Error in line: Wrong format of instruction')
-    elif inp[i][0].lower() == "hlt":
+    elif inst_lst[i][0].lower() == "hlt":
         print("0101000000000000")
