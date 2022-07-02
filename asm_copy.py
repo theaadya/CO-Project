@@ -1,5 +1,3 @@
-# make changes in this file
-
 PC = 0
 type_a = {"add": "10000", "sub": "10001", "mul": "10110", "xor": "11010", "or": "11011", "and": "11100"}
 type_b = {"ls":"11001", "rs":"11000", "mov":"10010"} #mov r1 imm
@@ -63,20 +61,26 @@ def DecBin(string):
     if not(Flag):
         return("Enter the correct number")
 
-with open('trial.txt') as f:
-    lst1 = f.readlines()
-    c = lst1.count("\n")
-    for i in range(c):
-        lst1.remove("\n")
-    for i in range(len(lst1)):
-        lst1[i] = " ".join(lst1[i].split())
+# with open('trial.txt') as f:
+#     lst1 = f.readlines()
+#     c = lst1.count("\n")
+#     for i in range(c):
+#         lst1.remove("\n")
+#     for i in range(len(lst1)):
+#         lst1[i] = " ".join(lst1[i].split())
 
-    parse_vars(lst1, vars, PC, count)
+#     parse_vars(lst1, vars, PC, count)
 
-    inst_lst = []
-    for i in lst1:
-        l = i.split()
-        inst_lst.append(l)
+#     inst_lst = []
+#     for i in lst1:
+#         l = i.split()
+#         inst_lst.append(l)
+f=input()
+lines=f.split("\n")
+inst_lst=[]
+for i in lines:
+    new_line=i.split()
+    inst_lst.append(new_line)
 
 if len(inst_lst[-1]) != 1 or inst_lst[-1][0] != "hlt":
     print("Absent/Invalid hlt declaration")
@@ -98,8 +102,8 @@ if flag == False:
             else:
                 print(f'Error in line: Wrong format of instruction')
                 flag = True
-        flag_b=True
         elif inst_lst[i][0] in type_b and inst_lst[i][2][1]=="$":
+            flag_b=True
             if len(inst_lst[i])!=3:
                 flag_b=False
                 print(f'Error in line {i}: Number of operands exceed requirement')
@@ -188,7 +192,6 @@ if flag == False:
                                     
             if flag_e:
                 machine_code.append(new_st) 
-        
         elif inst_lst[i][0].lower() == "hlt":
             machine_code.append("0101000000000000")
 if not flag:
