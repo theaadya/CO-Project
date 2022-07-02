@@ -11,6 +11,7 @@ words=lines.split()
 if words[0]=="and":
 	key_o=words[0]
 	machine_code_and+=opcode_dic[key_o]
+	machine_code_and+="00"
 
 	for i in range(1,4):
 		key_r=words[i][3]

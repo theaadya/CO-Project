@@ -11,5 +11,6 @@ words=line.split()
 if words[0]=="hlt":
 	key_o=words[0]
 	machine_code_hlt+=opcode_dic[key_o]
+	machine_code_hlt+="00000000000"
 
 print(machine_code_hlt)
