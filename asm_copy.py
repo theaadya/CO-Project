@@ -1,6 +1,6 @@
 # make changes in this file
 
-PC = 00000000
+PC = 0
 type_a = {"add": "10000", "sub": "10001", "mul": "10110", "xor": "11010", "or": "11011", "and": "11100"}
 type_b = {"ls":"11001", "rs":"11000", "mov":"10010"} #mov r1 imm
 type_c = {"div": "10111", "not": "11101", "cmp": "11110", "mov": "10011"} # mov r1 r2
@@ -150,16 +150,49 @@ if flag == False:
                     r2=reg[inst_lst[i][2]]
                 machine_code.append(op+"00000"+r1+r2)  
           
-          
-        elif inst_lst[i][0].lower() in type_e:
-            if len(inst_lst[i]) == 2:
-                if len(inst_lst[i][1]) == 8:
-                    op = type_e[inst_lst[i][0]]
-                    machine_code.append(op+"000"+inst_lst[i][1])
-                ## condition to check if mem_addr is accessible n acceptable (?)
+        elif inst_lst[i][1].lower() in type_d:
+            flag_d=True
+            new_st=""
+            if len(inst_lst[i]) == 4:
+                new_st.append(type_d[inst_lst[i][1]])
             else:
-                print(f'Error in line: Wrong format of instruction')
-                flag = True
+                flag_d=False
+                with open("output.txt", "a") as f:
+                    f.write(f'Error in line: Wrong format of instruction')
+            if inst_lst[i][2].lower() in reg:
+                new_st.append(reg[inst_lst[i][2]])
+            else:
+                with open("output.txt", "a") as f:
+                    flag_d=False
+                    f.write(f'Error in line: Undefined register name')
+            if len(inst_lst[i][3])==8 and check_bin(inst_lst[i][3]):
+                new_st.append(inst_lst[i][3])
+            else:
+                with open("output.txt", "a") as f:
+                    flag_d=False
+                    f.write(f'Error in line: Memory address is not accessible/acceptable')   
+            if flag_d:
+                machine_code.append(new_st)
+                
+        elif inst_lst[i][1].lower() in type_e:
+            flag_e=True
+            new_st=""
+            if len(inst_lst[i]) == 3:
+                new_st.append(type_e[inst_lst[i][1]])
+            else:
+                flag_e=False
+                with open("output.txt", "a") as f:
+                    f.write(f'Error in line: Wrong format of instruction')
+            if len(inst_lst[i][2]) == 8:
+                machine_code.append(inst_lst[i][1])
+                # condition to check if mem_addr is accessible (?)
+            else:
+                flag_e=False
+                with open("output.txt","a"):
+                    f.write(f'Error in line: Memory address is not accessible/acceptable')   
+            if flag_e:
+                machine_code.append(new_st) 
+        
         elif inst_lst[i][0].lower() == "hlt":
             machine_code.append("0101000000000000")
 if not flag:
