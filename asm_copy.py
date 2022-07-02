@@ -7,8 +7,9 @@ type_e = {"jmp": "11111", "jlt": "01100", "je": "01111", "jgt": "01101"}
 reg = {"r0": "000", "r1": "001", "r2": "010", "r3": "011", "r4": "100", "r5": "101", "r6": "110", "r7": "111"}
 vars = {}
 labels = {} # with line number where labels come
+machine_code = []
 count = 0
-
+flag = False
 
 def parse_vars(lst, vars_dict, PC, count):
     for i in lst:
@@ -34,37 +35,50 @@ with open('trial.txt') as f:
         l = i.split()
         inst_lst.append(l)
 
-for i in range(len(inst_lst)):
-    if inst_lst[i][0].lower() in type_a:
-        if len(inst_lst[i]) == 4:
-            if inst_lst[i][1].lower() in reg and inst_lst[i][2].lower() in reg and inst_lst[i][3].lower() in reg:
-                op = type_a[inst_lst[i][0]]
-                r1 = reg[inst_lst[i][1].lower()]
-                r2 = reg[inst_lst[i][2].lower()]
-                r3 = reg[inst_lst[i][3].lower()]
-                print(op+"00"+r1+r2+r3)
+if len(inst_lst[-1]) != 1 or inst_lst[-1][0] != "hlt":
+    print("Absent/Invalid hlt declaration")
+    flag = True
+
+if flag == False:
+    for i in range(len(inst_lst)):
+        if inst_lst[i][0].lower() in type_a:
+            if len(inst_lst[i]) == 4:
+                if inst_lst[i][1].lower() in reg and inst_lst[i][2].lower() in reg and inst_lst[i][3].lower() in reg:
+                    op = type_a[inst_lst[i][0]]
+                    r1 = reg[inst_lst[i][1].lower()]
+                    r2 = reg[inst_lst[i][2].lower()]
+                    r3 = reg[inst_lst[i][3].lower()]
+                    machine_code.append(op+"00"+r1+r2+r3)
+                else:
+                    print(f'Error in line: Undefined Register Name')
+                    flag = True
             else:
-                print(f'Error in line: Undefined Register Name')
-        else:
-            print(f'Error in line: Wrong format of instruction')
-    elif inst_lst[i][0].lower() in type_c:
-        if len(inst_lst[i]) == 3:
-            if inst_lst[i][1].lower() in reg and inst_lst[i][2].lower() in reg:
-                op = type_c[inst_lst[0]]
-                r1 = reg[inst_lst[i][1].lower()]
-                r2 = reg[inst_lst[i][2].lower()]
-                print(op+"00000"+r1+r2)
+                print(f'Error in line: Wrong format of instruction')
+                flag = True
+        elif inst_lst[i][0].lower() in type_c:
+            if len(inst_lst[i]) == 3:
+                if inst_lst[i][1].lower() in reg and inst_lst[i][2].lower() in reg:
+                    op = type_c[inst_lst[0]]
+                    r1 = reg[inst_lst[i][1].lower()]
+                    r2 = reg[inst_lst[i][2].lower()]
+                    machine_code.append(op+"00000"+r1+r2)
+                else:
+                    print(f'Error in line: Undefined Register Name')
+                    flag = True
             else:
-                print(f'Error in line: Undefined Register Name')
-        else:
-            print(f'Error in line: Wrong format of instruction')
-    elif inst_lst[i][0].lower() in type_e:
-        if len(inst_lst[i]) == 2:
-            if len(inst_lst[i][1]) == 8:
-                op = type_e[inst_lst[i][0]]
-                print(op+"000"+inst_lst[i][1])
-            ## condition to check if mem_addr is accessible n acceptable (?)
-        else:
-            print(f'Error in line: Wrong format of instruction')
-    elif inst_lst[i][0].lower() == "hlt":
-        print("0101000000000000")
+                print(f'Error in line: Wrong format of instruction')
+                flag = True
+        elif inst_lst[i][0].lower() in type_e:
+            if len(inst_lst[i]) == 2:
+                if len(inst_lst[i][1]) == 8:
+                    op = type_e[inst_lst[i][0]]
+                    machine_code.append(op+"000"+inst_lst[i][1])
+                ## condition to check if mem_addr is accessible n acceptable (?)
+            else:
+                print(f'Error in line: Wrong format of instruction')
+                flag = True
+        elif inst_lst[i][0].lower() == "hlt":
+            machine_code.append("0101000000000000")
+if not flag:
+    for i in machine_code:
+        print(i, end = "\n")
