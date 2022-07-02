@@ -22,6 +22,7 @@ def parse_vars(lst, vars_dict, PC, count):
 
 with open('trial.txt') as f:
     lst1 = f.readlines()
+
     c = lst1.count("\n")
     for i in range(c):
         lst1.remove("\n")
@@ -41,6 +42,7 @@ if len(inst_lst[-1]) != 1 or inst_lst[-1][0] != "hlt":
 
 if flag == False:
     for i in range(len(inst_lst)):
+
         if inst_lst[i][0].lower() in type_a:
             if len(inst_lst[i]) == 4:
                 if inst_lst[i][1].lower() in reg and inst_lst[i][2].lower() in reg and inst_lst[i][3].lower() in reg:
@@ -50,11 +52,13 @@ if flag == False:
                     r3 = reg[inst_lst[i][3].lower()]
                     machine_code.append(op+"00"+r1+r2+r3)
                 else:
-                    print(f'Error in line: Undefined Register Name')
-                    flag = True
+                    with open("output.txt", "a") as f:
+                        f.write(f'Error in line: Undefined Register Name')
+                        flag = True
             else:
                 print(f'Error in line: Wrong format of instruction')
                 flag = True
+
         elif inst_lst[i][0].lower() in type_c:
             if len(inst_lst[i]) == 3:
                 if inst_lst[i][1].lower() in reg and inst_lst[i][2].lower() in reg:
@@ -68,6 +72,7 @@ if flag == False:
             else:
                 print(f'Error in line: Wrong format of instruction')
                 flag = True
+
         elif inst_lst[i][0].lower() in type_e:
             if len(inst_lst[i]) == 2:
                 if len(inst_lst[i][1]) == 8:
@@ -79,6 +84,10 @@ if flag == False:
                 flag = True
         elif inst_lst[i][0].lower() == "hlt":
             machine_code.append("0101000000000000")
+
 if not flag:
-    for i in machine_code:
-        print(i, end = "\n")
+    with open("output.txt", "a") as f:
+        for i in machine_code:
+            f.write(i)
+            f.write("\n")
+            
