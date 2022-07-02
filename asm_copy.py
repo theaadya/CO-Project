@@ -132,7 +132,11 @@ if flag == False:
           if flag_c:
                    op=type_c[inst_lst[i][0]]
                    r1=reg[inst_lst[i][1]]
-                   if inst_lst[i][1]=="FLAG":
+                   if inst_lst[i][2]=="FLAG":
+                        r2="111"
+                   else:
+                        r2=reg[inst_lst[i][2]]
+                   machine_code.append(op+"00000"+r1+r2)
   
           
           
