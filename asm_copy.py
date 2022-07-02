@@ -1,24 +1,28 @@
 # make changes in this file
 
 PC = 00000000
-type_a = {"add": "10000", "sub": "10001", "mul": "10110", "xor": "11010", "or": "11011", "and": "11100"}
-type_c = {"div": "10111", "not": "11101", "cmp": "11110", "mov": "10011"} # mov r1 r2
+type_a = {"add": "10000", "sub": "10001", "mul": "10110",
+          "xor": "11010", "or": "11011", "and": "11100"}
+type_c = {"div": "10111", "not": "11101",
+          "cmp": "11110", "mov": "10011"}  # type of mov in this is mov r1 r2
 type_e = {"jmp": "11111", "jlt": "01100", "je": "01111", "jgt": "01101"}
-reg = {"r0": "000", "r1": "001", "r2": "010", "r3": "011", "r4": "100", "r5": "101", "r6": "110", "r7": "111"}
-vars = {}
-labels = {} # with line number where labels come
-machine_code = []
-line_nums = []
-count = 0
-flag = False
+reg = {"r0": "000", "r1": "001", "r2": "010", "r3": "011",
+       "r4": "100", "r5": "101", "r6": "110", "r7": "111"}
+vars = {}           # variables with their line number
+labels = {}         # labels with their line number
+machine_code = []   # final list to print/write result
+line_nums = []      # stores line number of each instruction
+vars_count = 0      # for counting variables
+flag = False        # for error checking, true if error present
 
-def parse_vars(lst, vars_dict, PC, count):
+
+def parse_vars(lst, vars_dict, PC, vars_count):
     for i in lst:
         if "var" not in i.lower():
-            PC+=1
+            PC += 1
         else:
-            vars_dict[f'var {count}'] = i[4]
-            count+=1
+            vars_dict[f'var {vars_count}'] = i[4]
+            vars_count += 1
 
 
 with open('trial.txt') as f:
@@ -32,15 +36,15 @@ with open('trial.txt') as f:
     for i in range(len(lst1)):
         lst1[i] = " ".join(lst1[i].split())
 
-    parse_vars(lst1, vars, PC, count)
+    parse_vars(lst1, vars, PC, vars_count)
 
     inst_lst = []
     idx = 0
     for i in lst1:
         l = i.split()
         inst_lst.append(l)
-        l.insert(0, line_nums[idx]+1)
-        idx += 1
+        l.insert(0, line_nums[idx]+1)   # line_nums+1 is the line number of a line
+        idx += 1                        # in text file which is not empty
 
 if len(inst_lst[-1]) != 2 or inst_lst[-1][1] != "hlt":
     print("Absent/Invalid hlt declaration")
@@ -86,7 +90,7 @@ if flag == False:
                 if len(inst_lst[i][2]) == 8:
                     op = type_e[inst_lst[i][1]]
                     machine_code.append(op+"000"+inst_lst[i][1])
-                ## condition to check if mem_addr is accessible n acceptable (?)
+                # condition to check if mem_addr is accessible n acceptable (?)
             else:
                 with open("output.txt", "a") as f:
                     f.write(f'Error in line: Wrong format of instruction')
