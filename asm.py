@@ -1,4 +1,4 @@
-# make changes in this file
+# create pull request to make changes
 
 PC = 00000000
 type_a = {"add": "10000", "sub": "10001", "mul": "10110", "xor": "11010", "or": "11011", "and": "11100"}
