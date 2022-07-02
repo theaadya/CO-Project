@@ -8,6 +8,7 @@ reg = {"r0": "000", "r1": "001", "r2": "010", "r3": "011", "r4": "100", "r5": "1
 vars = {}
 labels = {} # with line number where labels come
 machine_code = []
+line_nums = []
 count = 0
 flag = False
 
@@ -22,7 +23,9 @@ def parse_vars(lst, vars_dict, PC, count):
 
 with open('trial.txt') as f:
     lst1 = f.readlines()
-
+    for i in range(len(lst1)):
+        if lst1[i] != "\n":
+            line_nums.append(i)
     c = lst1.count("\n")
     for i in range(c):
         lst1.remove("\n")
@@ -32,24 +35,27 @@ with open('trial.txt') as f:
     parse_vars(lst1, vars, PC, count)
 
     inst_lst = []
+    idx = 0
     for i in lst1:
         l = i.split()
         inst_lst.append(l)
+        l.insert(0, line_nums[idx]+1)
+        idx += 1
 
-if len(inst_lst[-1]) != 1 or inst_lst[-1][0] != "hlt":
+if len(inst_lst[-1]) != 2 or inst_lst[-1][1] != "hlt":
     print("Absent/Invalid hlt declaration")
     flag = True
 
 if flag == False:
     for i in range(len(inst_lst)):
 
-        if inst_lst[i][0].lower() in type_a:
-            if len(inst_lst[i]) == 4:
-                if inst_lst[i][1].lower() in reg and inst_lst[i][2].lower() in reg and inst_lst[i][3].lower() in reg:
-                    op = type_a[inst_lst[i][0]]
-                    r1 = reg[inst_lst[i][1].lower()]
-                    r2 = reg[inst_lst[i][2].lower()]
-                    r3 = reg[inst_lst[i][3].lower()]
+        if inst_lst[i][1].lower() in type_a:
+            if len(inst_lst[i]) == 5:
+                if inst_lst[i][2].lower() in reg and inst_lst[i][3].lower() in reg and inst_lst[i][4].lower() in reg:
+                    op = type_a[inst_lst[i][1]]
+                    r1 = reg[inst_lst[i][2].lower()]
+                    r2 = reg[inst_lst[i][3].lower()]
+                    r3 = reg[inst_lst[i][4].lower()]
                     machine_code.append(op+"00"+r1+r2+r3)
                 else:
                     with open("output.txt", "a") as f:
@@ -59,30 +65,33 @@ if flag == False:
                 print(f'Error in line: Wrong format of instruction')
                 flag = True
 
-        elif inst_lst[i][0].lower() in type_c:
-            if len(inst_lst[i]) == 3:
-                if inst_lst[i][1].lower() in reg and inst_lst[i][2].lower() in reg:
-                    op = type_c[inst_lst[0]]
-                    r1 = reg[inst_lst[i][1].lower()]
-                    r2 = reg[inst_lst[i][2].lower()]
+        elif inst_lst[i][1].lower() in type_c:
+            if len(inst_lst[i]) == 4:
+                if inst_lst[i][2].lower() in reg and inst_lst[i][3].lower() in reg:
+                    op = type_c[inst_lst[1]]
+                    r1 = reg[inst_lst[i][2].lower()]
+                    r2 = reg[inst_lst[i][3].lower()]
                     machine_code.append(op+"00000"+r1+r2)
                 else:
-                    print(f'Error in line: Undefined Register Name')
-                    flag = True
+                    with open("output.txt", "a") as f:
+                        print(f'Error in line: Undefined Register Name')
+                        flag = True
             else:
-                print(f'Error in line: Wrong format of instruction')
-                flag = True
+                with open("output.txt", "a") as f:
+                    print(f'Error in line: Wrong format of instruction')
+                    flag = True
 
-        elif inst_lst[i][0].lower() in type_e:
-            if len(inst_lst[i]) == 2:
-                if len(inst_lst[i][1]) == 8:
-                    op = type_e[inst_lst[i][0]]
+        elif inst_lst[i][1].lower() in type_e:
+            if len(inst_lst[i]) == 3:
+                if len(inst_lst[i][2]) == 8:
+                    op = type_e[inst_lst[i][1]]
                     machine_code.append(op+"000"+inst_lst[i][1])
                 ## condition to check if mem_addr is accessible n acceptable (?)
             else:
-                print(f'Error in line: Wrong format of instruction')
-                flag = True
-        elif inst_lst[i][0].lower() == "hlt":
+                with open("output.txt", "a") as f:
+                    f.write(f'Error in line: Wrong format of instruction')
+                    flag = True
+        elif inst_lst[i][1].lower() == "hlt":
             machine_code.append("0101000000000000")
 
 if not flag:
@@ -90,4 +99,3 @@ if not flag:
         for i in machine_code:
             f.write(i)
             f.write("\n")
-            
