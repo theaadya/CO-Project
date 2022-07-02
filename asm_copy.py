@@ -97,6 +97,9 @@ if flag == False:
             if int(inst_lst[i][1][3])<0 or int(inst_lst[i][1][3])>6:
                 flag_b=False
                 print(f'Error in line {i}: Undefined Register name')
+            if inst_lst[i][2]=="FLAG":
+                flag_b=False
+                print(f'Error in line {i}: Illegal use of flags register')
             Imm=""
             for k in range(1,len(inst_lst[i][2])):
                 Imm+=inst_lst[i][2][k]
