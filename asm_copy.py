@@ -157,20 +157,17 @@ if flag == False:
                 new_st.append(type_d[inst_lst[i][1]])
             else:
                 flag_d=False
-                with open("output.txt", "a") as f:
-                    f.write(f'Error in line: Wrong format of instruction')
+                machine_code.append(f'Error in line: Wrong format of instruction')
             if inst_lst[i][2].lower() in reg:
                 new_st.append(reg[inst_lst[i][2]])
             else:
-                with open("output.txt", "a") as f:
-                    flag_d=False
-                    f.write(f'Error in line: Undefined register name')
+                flag_d=False
+                machine_code.append(Error in line: Undefined register name')
             if len(inst_lst[i][3])==8 and check_bin(inst_lst[i][3]):
                 new_st.append(inst_lst[i][3])
             else:
-                with open("output.txt", "a") as f:
-                    flag_d=False
-                    f.write(f'Error in line: Memory address is not accessible/acceptable')   
+                flag_d=False
+                machine_code.append(f'Error in line: Memory address is not accessible/acceptable')   
             if flag_d:
                 machine_code.append(new_st)
                 
@@ -181,15 +178,14 @@ if flag == False:
                 new_st.append(type_e[inst_lst[i][1]])
             else:
                 flag_e=False
-                with open("output.txt", "a") as f:
-                    f.write(f'Error in line: Wrong format of instruction')
+                machine_code.append(f'Error in line: Wrong format of instruction')
             if len(inst_lst[i][2]) == 8:
-                machine_code.append(inst_lst[i][1])
+                new_st.append(inst_lst[i][1])
                 # condition to check if mem_addr is accessible (?)
             else:
                 flag_e=False
-                with open("output.txt","a"):
-                    f.write(f'Error in line: Memory address is not accessible/acceptable')   
+                machine_code.append(f'Error in line: Memory address is not accessible/acceptable')   
+                                    
             if flag_e:
                 machine_code.append(new_st) 
         
