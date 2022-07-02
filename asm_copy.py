@@ -1,4 +1,5 @@
 # make changes in this file
+# make a pull request instead of directly committing to main branch
 
 PC = 00000000
 type_a = {"add": "10000", "sub": "10001", "mul": "10110", "xor": "11010", "or": "11011", "and": "11100", }
