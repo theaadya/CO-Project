@@ -1,7 +1,7 @@
 # make a pull request to add changes in this one
 
 PC = 00000000
-type_a = {"add": "10000", "sub": "10001", "mul": "10110", "xor": "11010", "or": "11011", "and": "11100", }
+type_a = {"add": "10000", "sub": "10001", "mul": "10110", "xor": "11010", "or": "11011", "and": "11100"}
 type_c = {"div": "10111"}
 type_e = {"jmp": "11111", "jlt": "01100"}
 reg = {"r1": "000", "r2": "001", "r3": "010", "r4":"011"}
