@@ -89,7 +89,6 @@ if flag == False:
             else:
                 print(f'Error in line: Wrong format of instruction')
                 flag = True
-                
         flag_b=True
         elif inst_lst[i][0] in type_b and inst_lst[i][2][1]=="$":
             if len(inst_lst[i])!=3:
@@ -110,34 +109,34 @@ if flag == False:
                 Im=DecBin(Imm)
                 machine_code.append(op+r1+Im)
                
+               
         flag_c=True
         elif inst_lst[i][0] in type_c:
-          if len(inst_lst[i]) == 3:
-                    flag_c=False
-                    print(f'Error in line {i}: Number of operand exceed requirement')
-          if int(inst_lst[i][1][3])<0 or int(inst_lst[i][1][3])>6:
-                    flag_c=False
-                    print(f'Error in line {i}: Undefined Register name')
-          if inst_lst[i][2]=="FLAG":
-                    if inst_lst[i][0]!="mov":
-                              flag_c=False
-                              print(f'Error in line {i}: Illegal use of flag register')
-          if inst_lst[i][1]=="FLAG":
+            if len(inst_lst[i]) == 3:
+                flag_c=False
+                print(f'Error in line {i}: Number of operand exceed requirement')
+            if int(inst_lst[i][1][3])<0 or int(inst_lst[i][1][3])>6:
+                flag_c=False
+                print(f'Error in line {i}: Undefined Register name')
+            if inst_lst[i][2]=="FLAG":
+                if inst_lst[i][0]!="mov":
                     flag_c=False
                     print(f'Error in line {i}: Illegal use of flag register')
-          if inst_lst[i][2]!="FLAG":
-                    if int(inst_lst[i][1][3])<0 or int(inst_lst[i][1][3])>6:
-                              flag_c=False
-                              print(f'Error in line {i}: Undefined register name')
-          if flag_c:
-                   op=type_c[inst_lst[i][0]]
-                   r1=reg[inst_lst[i][1]]
-                   if inst_lst[i][2]=="FLAG":
-                        r2="111"
-                   else:
-                        r2=reg[inst_lst[i][2]]
-                   machine_code.append(op+"00000"+r1+r2)
-  
+            if inst_lst[i][1]=="FLAG":
+                flag_c=False
+                print(f'Error in line {i}: Illegal use of flag register')
+            if inst_lst[i][2]!="FLAG":
+                if int(inst_lst[i][1][3])<0 or int(inst_lst[i][1][3])>6:
+                    flag_c=False
+                    print(f'Error in line {i}: Undefined register name')
+            if flag_c:
+                op=type_c[inst_lst[i][0]]
+                r1=reg[inst_lst[i][1]]
+                if inst_lst[i][2]=="FLAG":
+                    r2="111"
+                else:
+                    r2=reg[inst_lst[i][2]]
+                machine_code.append(op+"00000"+r1+r2)  
           
           
         elif inst_lst[i][0].lower() in type_e:
