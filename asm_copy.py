@@ -119,8 +119,9 @@ PC = len(inst_lst2) - len(vars) - 1
     
 lab_dic={}
 for i in range(len(inst_lst)):
-    if inst_lst[i][0][-1]==":" and inst_lst[i][1] in opcode:
-        lab_dic[inst_lst[i][0][:-1].lower()]= DecBin(string(i))
+    if len(inst_lst[i])!=0:
+        if inst_lst[i][0][-1]==":" and inst_lst[i][1] in opcode:
+            lab_dic[inst_lst[i][0][:-1].lower()]= DecBin(str(i))
 
 if flag == True:
     for i in range(len(inst_lst)):
