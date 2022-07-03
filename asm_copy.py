@@ -150,7 +150,6 @@ if flag == False:
                 else:
                     r2=reg[inst_lst[i][2]]
                 machine_code.append(op+"00000"+r1+r2)  
-          
         elif inst_lst[i][1].lower() in type_d:
             flag_d=True
             new_st=""
@@ -158,17 +157,20 @@ if flag == False:
                 new_st.append(type_d[inst_lst[i][1]])
             else:
                 flag_d=False
-                machine_code.append(f'Error in line: Wrong format of instruction')
+                machine_code=(f'Error in line: Wrong format of instruction')
+                break
             if inst_lst[i][2].lower() in reg:
                 new_st.append(reg[inst_lst[i][2]])
             else:
                 flag_d=False
-                machine_code.append(f'Error in line: Undefined register name')
+                machine_code=(f'Error in line: Undefined register name')
+                break
             if len(inst_lst[i][3])==8 and check_bin(inst_lst[i][3]):
                 new_st.append(inst_lst[i][3])
             else:
                 flag_d=False
-                machine_code.append(f'Error in line: Memory address is not accessible/acceptable')   
+                machine_code=(f'Error in line: Memory address is not accessible/acceptable')  
+                break 
             if flag_d:
                 machine_code.append(new_st)
                 
@@ -179,20 +181,23 @@ if flag == False:
                 new_st.append(type_e[inst_lst[i][1]])
             else:
                 flag_e=False
-                machine_code.append(f'Error in line: Wrong format of instruction')
+                machine_code=(f'Error in line: Wrong format of instruction')
+                break
             if len(inst_lst[i][2]) == 8:
                 new_st.append(inst_lst[i][1])
                 # condition to check if mem_addr is accessible (?)
             else:
                 flag_e=False
-                machine_code.append(f'Error in line: Memory address is not accessible/acceptable')   
+                machine_code=(f'Error in line: Memory address is not accessible/acceptable')
+                break   
                                     
             if flag_e:
                 machine_code.append(new_st) 
-
+                
+        elif inst_lst[i][0].lower() == "var":
+            vars[inst_lst[i][1]]=0
         elif inst_lst[i][0].lower() == "hlt":
-            machine_code.append("0101000000000000")
-            
+            machine_code.append("0101000000000000")           
         elif inst_lst[i][0] == "":
             continue
 if not flag:
