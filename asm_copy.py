@@ -209,12 +209,16 @@ if flag == True:
                         machine_code.append(op+r1+mem)
                     elif inst_lst[i][2] in labels:
                         print(f'Error in line {i+1}: Use of labels as variables')
+                        break
                     else:
                         print(f'Error in line {i+1}: Use undefined variables')
+                        break
                 else:
                     print(f'Error in line {i+1}: Undefined Register name')
+                    break
             else:
                 print(f'Error in line {i+1}: Wrong Instruction syntax for {inst_lst[i][0].lower()}')
+                break
                 
         elif inst_lst[i][0].lower() in type_e:
             flag_e=True
