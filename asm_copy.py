@@ -8,7 +8,7 @@ reg = {"r0": "000", "r1": "001", "r2": "010", "r3": "011", "r4": "100", "r5": "1
 vars = {}
 labels = {} # with line number where labels come
 machine_code = []
-count = 0
+vars_count = 0 
 flag = False
 
 def check_bin(check_str):
@@ -19,13 +19,13 @@ def check_bin(check_str):
             break
     return flag
 
-def parse_vars(lst, vars_dict, PC, count):
+def parse_vars(lst, vars_dict, PC):
     for i in lst:
         if "var" not in i.lower():
             PC+=1
         else:
-            vars_dict[f'var {count}'] = i[4]
-            count+=1
+            vars_dict[f'var {vars_count}'] = i[4]
+            vars_count += 1
 
 def DecBin(string):
     #checking if number is decimal
@@ -52,7 +52,7 @@ def DecBin(string):
             num=q
         zeroes=8-len(Bnumlst)
         for i in range(zeroes):
-        	Bnumlst.append(0)
+            Bnumlst.append(0)
         Bnumlst.reverse()
         Anslst=[str(i) for i in Bnumlst]
         Binary_Number="".join(Anslst)
@@ -61,56 +61,49 @@ def DecBin(string):
     if not(Flag):
         return("Enter the correct number")
 
-# with open('trial.txt') as f:
-#     lst1 = f.readlines()
-#     c = lst1.count("\n")
-#     for i in range(c):
-#         lst1.remove("\n")
-#     for i in range(len(lst1)):
-#         lst1[i] = " ".join(lst1[i].split())
+    # parse_vars(lst1, vars, PC)
 
-#     parse_vars(lst1, vars, PC, count)
+# f=input()
+# lines=f.split("\n")
+# inst_lst=[]
+# for i in lines:
+#     new_line=i.split()
+#     inst_lst.append(new_line)
 
-#     inst_lst = []
-#     for i in lst1:
-#         l = i.split()
-#         inst_lst.append(l)
-f=input()
-lines=f.split("\n")
-inst_lst=[]
-for i in lines:
-    new_line=i.split()
-    inst_lst.append(new_line)
-    
 # alternative code to read multi line input
-# import sys
-# s = sys.stdin.read()
-# line = s.split("\n")
-# inst_lst = []
-# for i in line:
-#     ele = i.split()
-#     inst_lst.append(ele)
+import sys
+s = sys.stdin.read()
+line = s.split("\n")
+inst_lst = []
+for i in line:
+    ele = i.split()
+    inst_lst.append(ele)
+
 
 if len(inst_lst[-1]) != 1 or inst_lst[-1][0] != "hlt":
-    print("Absent/Invalid hlt declaration")
-    flag = True
+    with open("output.txt", "a") as f:
+        flag = True
+        # f.write(f'Error in line {}: Undefined Register Name')
 
 if flag == False:
     for i in range(len(inst_lst)):
         if inst_lst[i][0].lower() in type_a:
-            if len(inst_lst[i]) == 4:
-                if inst_lst[i][1].lower() in reg and inst_lst[i][2].lower() in reg and inst_lst[i][3].lower() in reg:
-                    op = type_a[inst_lst[i][0]]
-                    r1 = reg[inst_lst[i][1].lower()]
-                    r2 = reg[inst_lst[i][2].lower()]
-                    r3 = reg[inst_lst[i][3].lower()]
-                    machine_code.append(op+"00"+r1+r2+r3)
-                else:
-                    print(f'Error in line: Undefined Register Name')
-                    flag = True
-            else:
-                print(f'Error in line: Wrong format of instruction')
-                flag = True
+            flag_a = True
+            if len(inst_lst[i]) != 4:
+                with open("output.txt", "a") as f:
+                    flag_a = False
+                    f.write(f'Error in line {i}: Wrong Instruction syntax for {inst_lst[i][0].lower()}')
+            if inst_lst[i][1].lower() not in reg or inst_lst[i][2].lower() not in reg or inst_lst[i][3].lower() not in reg:
+                with open("output.txt", "a") as f:
+                    flag_a = False
+                    f.write(f'Error in line {i}: Undefined Register name')
+            if flag_a:
+                op = type_a[inst_lst[i][0]]
+                r1 = reg[inst_lst[i][1].lower()]
+                r2 = reg[inst_lst[i][2].lower()]
+                r3 = reg[inst_lst[i][3].lower()]
+                machine_code.append(op+"00"+r1+r2+r3)
+            
         elif inst_lst[i][0] in type_b and inst_lst[i][2][1]=="$":
             flag_b=True
             if len(inst_lst[i])!=3:
@@ -135,8 +128,8 @@ if flag == False:
                 machine_code.append(op+r1+Im)
                
                
-        flag_c=True
         elif inst_lst[i][0] in type_c:
+            flag_c=True
             if len(inst_lst[i]) == 3:
                 flag_c=False
                 print(f'Error in line {i}: Number of operand exceed requirement')
@@ -175,7 +168,7 @@ if flag == False:
                 new_st.append(reg[inst_lst[i][2]])
             else:
                 flag_d=False
-                machine_code.append(Error in line: Undefined register name')
+                machine_code.append(f'Error in line: Undefined register name')
             if len(inst_lst[i][3])==8 and check_bin(inst_lst[i][3]):
                 new_st.append(inst_lst[i][3])
             else:
@@ -201,8 +194,13 @@ if flag == False:
                                     
             if flag_e:
                 machine_code.append(new_st) 
+
         elif inst_lst[i][0].lower() == "hlt":
             machine_code.append("0101000000000000")
+            
+        elif inst_lst[i][0] == "":
+            continue
 if not flag:
     for i in machine_code:
         print(i, end = "\n")
+        
