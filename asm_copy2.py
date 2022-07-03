@@ -190,7 +190,7 @@ if flag == True:
             if len(inst_lst[i]) != 3:
                 flag_c=False
                 print(f'Error in line {i+1}: Number of operand exceed requirement')
-            if not(inst_lst[i][1][1]) or int(inst_lst[i][1][1])<0 or int(inst_lst[i][1][1])>6:
+            if not(inst_lst[i][1][1].isnumeric()) or int(inst_lst[i][1][1])<0 or int(inst_lst[i][1][1])>6:
                 flag_c=False
                 print(f'Error in line {i+1}: Undefined Register name')
             if inst_lst[i][2].lower()=="flag":
