@@ -63,27 +63,27 @@ def DecBin(string):
 
     # parse_vars(lst1, vars, PC)
 
-f=input()
-lines=f.split("\n")
-inst_lst=[]
-for i in lines:
-    new_line=i.split()
-    inst_lst.append(new_line)
+# f=input()
+# lines=f.split("\n")
+# inst_lst=[]
+# for i in lines:
+#     new_line=i.split()
+#     inst_lst.append(new_line)
 
 # alternative code to read multi line input
-# import sys
-# s = sys.stdin.read()
-# line = s.split("\n")
-# inst_lst = []
-# for i in line:
-#     ele = i.split()
-#     inst_lst.append(ele)
+import sys
+s = sys.stdin.read()
+line = s.split("\n")
+inst_lst = []
+for i in line:
+    ele = i.split()
+    inst_lst.append(ele)
 
 
-# if len(inst_lst[-1]) != 1 or inst_lst[-1][0] != "hlt":
-#     with open("output.txt", "a") as f:
-#         flag = True
-        # f.write(f'Error in line {}: Undefined Register Name')
+if len(inst_lst[-1]) != 1 or inst_lst[-1][0] != "hlt":
+    with open("output.txt", "a") as f:
+        flag = True
+        f.write(f'Error in line {len(inst_lst)}: Undefined Register Name')
 
 if flag == False:
     for i in range(len(inst_lst)):
@@ -92,11 +92,11 @@ if flag == False:
             if len(inst_lst[i]) != 4:
                 with open("output.txt", "a") as f:
                     flag_a = False
-                    f.write(f'Error in line {i}: Wrong Instruction syntax for {inst_lst[i][0].lower()}')
+                    f.write(f'Error in line {i+1}: Wrong Instruction syntax for {inst_lst[i][0].lower()}')
             if inst_lst[i][1].lower() not in reg or inst_lst[i][2].lower() not in reg or inst_lst[i][3].lower() not in reg:
                 with open("output.txt", "a") as f:
                     flag_a = False
-                    f.write(f'Error in line {i}: Undefined Register name')
+                    f.write(f'Error in line {i+1}: Undefined Register name')
             if flag_a:
                 op = type_a[inst_lst[i][0]]
                 r1 = reg[inst_lst[i][1].lower()]
@@ -126,7 +126,6 @@ if flag == False:
                 r1=reg[inst_lst[i][1]]
                 Im=DecBin(Imm)
                 machine_code.append(op+r1+Im)
-               
                
         elif inst_lst[i][0] in type_c:
             flag_c=True
@@ -203,4 +202,3 @@ if flag == False:
 if not flag:
     for i in machine_code:
         print(i, end = "\n")
-        
