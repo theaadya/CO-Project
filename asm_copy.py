@@ -84,12 +84,14 @@ for i in line:
     inst_lst.append(ele)
 
 
-if len(inst_lst[-1]) != 1 or inst_lst[-1][0] != "hlt":
+if len(inst_lst2[-1]) != 1 or inst_lst2[-1][0] != "hlt":
         flag = False
-        print(f'Error in line {len(inst_lst)}: Invalid/Absent hlt declaration')
+        print(f'Error in line {len(inst_lst2)}: Invalid/Absent hlt declaration')
 
 if flag == True:
     for i in range(len(inst_lst)):
+        if len(inst_lst[i]) == 0:
+            continue
         if inst_lst[i][0].lower() in type_a:
             flag_a = True
             if len(inst_lst[i]) != 4:
