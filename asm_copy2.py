@@ -210,7 +210,7 @@ if flag == True:
                 if inst_lst[i][2].lower()=="flag":
                     r2="111"
                 else:
-                    r2=reg[inst_lst[i][2]]
+                    r2=reg[(inst_lst[i][2]).lower()]
                 machine_code.append(op+"00000"+r1+r2)  
                 
         elif inst_lst[i][0].lower() in type_d:  
