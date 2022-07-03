@@ -201,7 +201,7 @@ if flag == True:
                 flag_c=False
                 print(f'Error in line {i+1}: Illegal use of flag register')
             if inst_lst[i][2].lower()!="flag":
-                if int(inst_lst[i][1][1])<0 or int(inst_lst[i][1][1])>6:
+                if not(inst_lst[i][1][1].isnumeric()) or int(inst_lst[i][1][1])<0 or int(inst_lst[i][1][1])>6:
                     flag_c=False
                     print(f'Error in line {i+1}: Undefined register name')
             if flag_c:
