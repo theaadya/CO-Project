@@ -11,7 +11,7 @@ machine_code = []
 vars_count = 0 
 flag = False
 
-def check_bin(check_str):   # return True if error present
+def check_bin(check_str):   
     flag = True
     for i in range(len(check_str)):
         if check_str[i] not in "01":
