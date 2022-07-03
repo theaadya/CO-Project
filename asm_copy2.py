@@ -181,7 +181,7 @@ if flag == True:
                 print(f'Error in line {i+1}: Illegal immediate values')
             if flag_b:
                 op=type_b[inst_lst[i][0].lower()]
-                r1=reg[inst_lst[i][1]]
+                r1=reg[(inst_lst[i][1]).lower()]
                 Im=DecBin(Imm)
                 machine_code.append(op+r1+Im)
                
