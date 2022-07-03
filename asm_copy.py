@@ -194,7 +194,10 @@ if flag == True:
                 machine_code.append(new_st) 
                 
         elif inst_lst[i][0].lower() == "hlt":
-            machine_code.append("0101000000000000")           
+            machine_code.append("0101000000000000")    
+        
+        elif inst_lst[i] == "[]":
+            continue
 if flag:
     for i in machine_code:
         print(i, end = "\n")
