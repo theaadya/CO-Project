@@ -161,10 +161,12 @@ if flag == True:
             if len(inst_lst[i]) == 3:
                 if inst_lst[i][1].lower() in reg:
                     if inst_lst[i][2] in vars.values():
-                        op = type_a[inst_lst[i][0]]
+                        op = type_d[inst_lst[i][0]]
                         r1 = reg[inst_lst[i][1].lower()]
-                        PC = PC + len(inst_lst) - 1
-                        mem = PC
+                        PC += 1
+                        b = bin(PC)
+                        mem = str(b).replace("0b", "")
+                        mem = format(int(mem), '#08')
                         machine_code.append(op+r1+mem)
                     elif inst_lst[i][2] in labels:
                         print(f'Error in line {i+1}: Use of labels as variables')
@@ -197,9 +199,7 @@ if flag == True:
                 
         elif inst_lst[i][0].lower() == "hlt":
             machine_code.append("0101000000000000")    
-        
-        elif inst_lst[i] == "[]":
-            continue
+            
 if flag:
     for i in machine_code:
         print(i, end = "\n")
