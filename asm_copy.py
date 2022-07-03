@@ -178,13 +178,13 @@ if flag == True:
         elif inst_lst[i][1].lower() in type_e:
             flag_e=True
             new_st=""
-            if len(inst_lst[i]) == 3:
-                new_st.append(type_e[inst_lst[i][1]])
+            if len(inst_lst[i]) == 2:
+                new_st.append(type_e[inst_lst[i][0]])
             else:
                 flag_e=False
                 machine_code=(f'Error in line: Wrong format of instruction')
                 break
-            if len(inst_lst[i][2]) == 8:
+            if len(inst_lst[i][1]) == 8:
                 new_st.append(inst_lst[i][1])
                 # condition to check if mem_addr is accessible (?)
             else:
