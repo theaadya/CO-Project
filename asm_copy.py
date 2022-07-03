@@ -151,7 +151,7 @@ if flag == False:
                     r2=reg[inst_lst[i][2]]
                 machine_code.append(op+"00000"+r1+r2)  
                 
-       elif inst_lst[i][0].lower() in type_d:
+        elif inst_lst[i][0].lower() in type_d:
             if len(inst_lst[i]) == 3:
                 if inst_lst[i][1].lower() in reg:
                     flag_var = 0
@@ -192,6 +192,7 @@ if flag == False:
                 
         elif inst_lst[i][0].lower() == "var":
             vars[inst_lst[i][1]]=0
+
         elif inst_lst[i][0].lower() == "hlt":
             machine_code.append("0101000000000000")           
         elif inst_lst[i][0] == "":
