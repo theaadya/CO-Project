@@ -41,7 +41,7 @@ def DecBin(string):
         Flag=False
   
     #converting decimal to binary
-    if Flag and Flag1:
+    if Flag and Flag1:      # typo in Flag1 (?)
         num=int(string)
         Bnumlst=[]
         q=1
