@@ -133,20 +133,20 @@ if flag == True:
             continue
             
         if inst_lst[i][0].lower() in type_a:
-            flag_a = True
-            if len(inst_lst[i]) != 4:
-                flag_a=False
+            if len(inst_lst[i]) == 4:
+                if inst_lst[i][1].lower() in reg and inst_lst[i][2].lower() in reg and inst_lst[i][3].lower() in reg:
+                    op = type_a[inst_lst[i][0]]
+                    r1 = reg[inst_lst[i][1].lower()]
+                    r2 = reg[inst_lst[i][2].lower()]
+                    r3 = reg[inst_lst[i][3].lower()]
+                    machine_code.append(op+"00"+r1+r2+r3)
+                else:
+                    print(f'Error in line {i+1}: Undefined Register name')
+                    break
+            else:
                 print(f'Error in line {i+1}: Wrong Instruction syntax for {inst_lst[i][0].lower()}')
-            if inst_lst[i][1].lower() not in reg or inst_lst[i][2].lower() not in reg or inst_lst[i][3].lower() not in reg:
-                flag_a = False
-                print(f'Error in line {i+1}: Undefined Register name')
-            if flag_a:
-                op = type_a[inst_lst[i][0]]
-                r1 = reg[inst_lst[i][1].lower()]
-                r2 = reg[inst_lst[i][2].lower()]
-                r3 = reg[inst_lst[i][3].lower()]
-                machine_code.append(op+"00"+r1+r2+r3)
-            
+                break
+                    
         elif inst_lst[i][0].lower() in type_b and inst_lst[i][2][1]=="$":
             flag_b=True
             if len(inst_lst[i])!=3:
