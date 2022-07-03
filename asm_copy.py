@@ -236,6 +236,10 @@ if len(inst_lst2[-1]) != 1 or inst_lst2[-1][0] != "hlt":
     flag = False
     print(f'Error in line {len(inst_lst2)}: Invalid/Absent hlt declaration')           
             
-if flag:
+# if flag:
+#     for i in machine_code:
+#         print(i, end = "\n")
+if flag_a and flag_b and flag_c and flag_d and flag_e:
     for i in machine_code:
-        print(i, end = "\n")
+        print(i)
+        print("\n")
