@@ -193,9 +193,6 @@ if flag == True:
             if flag_e:
                 machine_code.append(new_st) 
                 
-        elif inst_lst[i][0].lower() == "var":
-            vars[inst_lst[i][1]]=0
-
         elif inst_lst[i][0].lower() == "hlt":
             machine_code.append("0101000000000000")           
 if flag:
