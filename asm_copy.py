@@ -9,7 +9,7 @@ vars = {}
 labels = {} # with line number where labels come
 machine_code = []
 vars_count = 0 
-flag = False
+flag = True
 
 def check_bin(check_str):   
     flag = True
@@ -81,10 +81,10 @@ for i in lines:
 
 
 if len(inst_lst[-1]) != 1 or inst_lst[-1][0] != "hlt":
-        flag = True
+        flag = False
         print(f'Error in line {len(inst_lst)}: Invalid/Absent hlt declaration')
 
-if flag == False:
+if flag == True:
     for i in range(len(inst_lst)):
         if inst_lst[i][0].lower() in type_a:
             flag_a = True
@@ -196,6 +196,6 @@ if flag == False:
             machine_code.append("0101000000000000")           
         elif inst_lst[i][0] == "":
             continue
-if not flag:
+if flag:
     for i in machine_code:
         print(i, end = "\n")
