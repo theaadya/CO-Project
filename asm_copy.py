@@ -154,7 +154,6 @@ if flag == False:
         elif inst_lst[i][0].lower() in type_d:
             if len(inst_lst[i]) == 3:
                 if inst_lst[i][1].lower() in reg:
-                    flag_var = 0
                     if inst_lst[i][2] in vars.values():
                         op = type_a[inst_lst[i][0]]
                         r1 = reg[inst_lst[i][1].lower()]
