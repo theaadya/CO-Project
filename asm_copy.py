@@ -83,7 +83,7 @@ for i in line:
 if len(inst_lst[-1]) != 1 or inst_lst[-1][0] != "hlt":
     with open("output.txt", "a") as f:
         flag = True
-        f.write(f'Error in line {len(inst_lst)}: Undefined Register Name')
+        f.write(f'Error in line {len(inst_lst)}: Invalid/Absent hlt declaration')
 
 if flag == False:
     for i in range(len(inst_lst)):
