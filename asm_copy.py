@@ -26,7 +26,7 @@ def parse_vars(lst, vars_dict, vars_count):
     for i in lst:
         if "var" in i.lower():
             vars_count += 1
-            vars_dict[f'var {vars_count}'] = i[4]
+            vars_dict[f'var {vars_count}'] = i[4:]
 
 def DecBin(string):
     #checking if number is decimal
@@ -116,10 +116,6 @@ for i in line:
     inst_lst2.append(ele)
 
 PC = len(inst_lst2) - len(vars) - 1
-
-if len(inst_lst2[-1]) != 1 or inst_lst2[-1][0] != "hlt":
-        flag = False
-        print(f'Error in line {len(inst_lst2)}: Invalid/Absent hlt declaration')
     
 lab_dic={}
 for i in range(len(inst_lst)):
@@ -211,7 +207,7 @@ if flag == True:
                         print(f'Error in line {i+1}: Use of labels as variables')
                         break
                     else:
-                        print(f'Error in line {i+1}: Use undefined variables')
+                        print(f'Error in line {i+1}: Use of undefined variable')
                         break
                 else:
                     print(f'Error in line {i+1}: Undefined Register name')
@@ -234,7 +230,11 @@ if flag == True:
                 machine_code.append(op+mem)
 
         elif inst_lst[i][0].lower() == "hlt":
-            machine_code.append("0101000000000000")           
+            machine_code.append("0101000000000000")
+
+if len(inst_lst2[-1]) != 1 or inst_lst2[-1][0] != "hlt":
+    flag = False
+    print(f'Error in line {len(inst_lst2)}: Invalid/Absent hlt declaration')           
             
 if flag:
     for i in machine_code:
