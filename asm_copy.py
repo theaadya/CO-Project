@@ -81,22 +81,18 @@ for i in lines:
 
 
 if len(inst_lst[-1]) != 1 or inst_lst[-1][0] != "hlt":
-    with open("output.txt", "a") as f:
         flag = True
-        f.write(f'Error in line {len(inst_lst)}: Invalid/Absent hlt declaration')
+        print(f'Error in line {len(inst_lst)}: Invalid/Absent hlt declaration')
 
 if flag == False:
     for i in range(len(inst_lst)):
         if inst_lst[i][0].lower() in type_a:
             flag_a = True
             if len(inst_lst[i]) != 4:
-                with open("output.txt", "a") as f:
-                    flag_a = False
-                    f.write(f'Error in line {i+1}: Wrong Instruction syntax for {inst_lst[i][0].lower()}')
+                print(f'Error in line {i+1}: Wrong Instruction syntax for {inst_lst[i][0].lower()}')
             if inst_lst[i][1].lower() not in reg or inst_lst[i][2].lower() not in reg or inst_lst[i][3].lower() not in reg:
-                with open("output.txt", "a") as f:
-                    flag_a = False
-                    f.write(f'Error in line {i+1}: Undefined Register name')
+                flag_a = False
+                print(f'Error in line {i+1}: Undefined Register name')
             if flag_a:
                 op = type_a[inst_lst[i][0]]
                 r1 = reg[inst_lst[i][1].lower()]
