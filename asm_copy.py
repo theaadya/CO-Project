@@ -244,6 +244,10 @@ for i in range(len(inst_lst)):
 # if flag:
 #     for i in machine_code:
 #         print(i, end = "\n")
+# if flag_a and flag_b and flag_c and flag_d and flag_e:
+#     for i in machine_code:
+#         print(i, end = "\n")
 if flag_a and flag_b and flag_c and flag_d and flag_e:
     for i in machine_code:
-        print(i, end = "\n")
+        sys.stdout.write(i)
+        sys.stdout.write("\n")
