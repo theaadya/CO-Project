@@ -226,7 +226,7 @@ if flag == True:
             if len(inst_lst[i])!=2:
                 flag_e=False
                 print(f' Error in line {i+1}: Number of operands exceed requirement')
-            if inst_lst[i][1] not in lab_dic:
+            if inst_lst[i][1].lower() not in lab_dic:
                 flag_e=False
                 print(f'Error in line {i+1}: Memory address is not a label')
             if flag_e:
@@ -237,12 +237,12 @@ if flag == True:
         elif inst_lst[i][0].lower() == "hlt":
             machine_code.append("0101000000000000")
 
-if len(inst_lst2[-1]) != 1 or inst_lst2[-1][0] != "hlt":
+if len(inst_lst2[-1]) != 1 or inst_lst2[-1][0].lower() != "hlt":
     flag = False
     print(f'Error in line {len(inst_lst2)}: Invalid/Absent hlt declaration') 
     
 for i in range(len(inst_lst)):
-    if flag and vars_count != 0 and inst_lst[i][0] != "var":
+    if flag and vars_count != 0 and inst_lst[i][0].lower() != "var":
         flag = False
         print(f'Error in line 1: Variables not declared at the begining')
             
