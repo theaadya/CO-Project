@@ -206,7 +206,7 @@ if flag == True:
                     print(f'Error in line {i+1}: Undefined register name')
             if flag_c:
                 op=type_c[inst_lst[i][0]]
-                r1=reg[inst_lst[i][1]]
+                r1=reg[(inst_lst[i][1]).lower()]
                 if inst_lst[i][2].lower()=="flag":
                     r2="111"
                 else:
