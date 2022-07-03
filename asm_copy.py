@@ -24,8 +24,8 @@ def parse_vars(lst, vars_dict, PC):
         if "var" not in i.lower():
             PC+=1
         else:
-            vars_dict[f'var {vars_count}'] = i[4]
             vars_count += 1
+            vars_dict[f'var {vars_count}'] = i[4]
 
 def DecBin(string):
     #checking if number is decimal
@@ -41,7 +41,7 @@ def DecBin(string):
         Flag=False
   
     #converting decimal to binary
-    if Flag and Flag1:      # typo in Flag1 (?)
+    if Flag and Flag1:      # typo in Flag1 (?)     # also can use bin() function instead
         num=int(string)
         Bnumlst=[]
         q=1
@@ -63,21 +63,21 @@ def DecBin(string):
 
     # parse_vars(lst1, vars, PC)
 
-# f=input()
-# lines=f.split("\n")
-# inst_lst=[]
-# for i in lines:
-#     new_line=i.split()
-#     inst_lst.append(new_line)
+f=input()
+lines=f.split("\n")
+inst_lst=[]
+for i in lines:
+    new_line=i.split()
+    inst_lst.append(new_line)
 
 # alternative code to read multi line input
-import sys
-s = sys.stdin.read()
-line = s.split("\n")
-inst_lst = []
-for i in line:
-    ele = i.split()
-    inst_lst.append(ele)
+# import sys
+# s = sys.stdin.read()
+# line = s.split("\n")
+# inst_lst = []
+# for i in line:
+#     ele = i.split()
+#     inst_lst.append(ele)
 
 
 if len(inst_lst[-1]) != 1 or inst_lst[-1][0] != "hlt":
