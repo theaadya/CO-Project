@@ -150,29 +150,25 @@ if flag == False:
                 else:
                     r2=reg[inst_lst[i][2]]
                 machine_code.append(op+"00000"+r1+r2)  
-        elif inst_lst[i][1].lower() in type_d:
-            flag_d=True
-            new_st=""
-            if len(inst_lst[i]) == 4:
-                new_st.append(type_d[inst_lst[i][1]])
+                
+       elif inst_lst[i][0].lower() in type_d:
+            if len(inst_lst[i]) == 3:
+                if inst_lst[i][1].lower() in reg:
+                    flag_var = 0
+                    if inst_lst[i][2] in vars.values():
+                        op = type_a[inst_lst[i][0]]
+                        r1 = reg[inst_lst[i][1].lower()]
+                        PC = PC + len(inst_lst) - 1
+                        mem = PC
+                        machine_code.append(op+r1+mem)
+                    elif inst_lst[i][2] in labels:
+                        print(f'Error in line {i+1}: Use of labels as variables')
+                    else:
+                        print(f'Error in line {i+1}: Use undefined variables')
+                else:
+                    print(f'Error in line {i+1}: Undefined Register name')
             else:
-                flag_d=False
-                machine_code=(f'Error in line: Wrong format of instruction')
-                break
-            if inst_lst[i][2].lower() in reg:
-                new_st.append(reg[inst_lst[i][2]])
-            else:
-                flag_d=False
-                machine_code=(f'Error in line: Undefined register name')
-                break
-            if len(inst_lst[i][3])==8 and check_bin(inst_lst[i][3]):
-                new_st.append(inst_lst[i][3])
-            else:
-                flag_d=False
-                machine_code=(f'Error in line: Memory address is not accessible/acceptable')  
-                break 
-            if flag_d:
-                machine_code.append(new_st)
+                print(f'Error in line {i+1}: Wrong Instruction syntax for {inst_lst[i][0].lower()}')
                 
         elif inst_lst[i][1].lower() in type_e:
             flag_e=True
