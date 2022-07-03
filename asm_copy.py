@@ -119,7 +119,7 @@ PC = len(inst_lst2) - len(vars) - 1
     
 lab_dic={}
 for i in range(len(inst_lst)):
-    elif inst_lst[i][0][-1]==":" and inst_lst[i][1] in opcode:
+    if inst_lst[i][0][-1]==":" and inst_lst[i][1] in opcode:
         lab_dic[DecBin(string(i))]=inst_lst[i][0][:-1].lower()
 
 if flag == True:
@@ -226,7 +226,7 @@ if flag == True:
                 print(f'Error in line {i+1}: memory address is not a label')
             if flag_e:
                 op=type_e[inst_lst[i][0]]
-                mem=inst_lst[i][1]
+                mem=lab_dic[inst_lst[i][1]]
                 machine_code.append(op+mem)
 
         elif inst_lst[i][0].lower() == "hlt":
