@@ -234,12 +234,16 @@ if flag == True:
 
 if len(inst_lst2[-1]) != 1 or inst_lst2[-1][0] != "hlt":
     flag = False
-    print(f'Error in line {len(inst_lst2)}: Invalid/Absent hlt declaration')           
+    print(f'Error in line {len(inst_lst2)}: Invalid/Absent hlt declaration') 
+    
+for i in range(len(inst_lst)):
+    if flag and inst_lst[i][0] != "var":
+        flag = False
+        print(f'Error in line 1: Variables not declared at the begining')
             
 # if flag:
 #     for i in machine_code:
 #         print(i, end = "\n")
 if flag_a and flag_b and flag_c and flag_d and flag_e:
     for i in machine_code:
-        print(i)
-        print("\n")
+        print(i, end = "\n")
