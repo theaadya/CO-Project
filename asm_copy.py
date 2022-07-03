@@ -1,3 +1,4 @@
+import sys
 PC = 0
 type_a = {"add": "10000", "sub": "10001", "mul": "10110", "xor": "11010", "or": "11011", "and": "11100"}
 type_b = {"ls":"11001", "rs":"11000", "mov":"10010"} #mov r1 imm
@@ -71,9 +72,12 @@ def DecBin(string):
 #     inst_lst.append(new_line)
 
 # alternative code to read multi line input
-import sys
 s = sys.stdin.read()
 line = s.split("\n")
+c = line.count("")
+for i in range(c):
+    line.remove("")
+parse_vars(line, vars, PC, vars_count)
 inst_lst = []
 for i in line:
     ele = i.split()
