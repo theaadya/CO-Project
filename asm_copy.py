@@ -81,6 +81,15 @@ inst_lst=[]
 for i in lines:
     new_line=i.split()
     inst_lst.append(new_line)
+    
+# alternative code to read multi line input
+# import sys
+# s = sys.stdin.read()
+# line = s.split("\n")
+# inst_lst = []
+# for i in line:
+#     ele = i.split()
+#     inst_lst.append(ele)
 
 if len(inst_lst[-1]) != 1 or inst_lst[-1][0] != "hlt":
     print("Absent/Invalid hlt declaration")
