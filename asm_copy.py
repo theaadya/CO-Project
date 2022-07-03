@@ -22,11 +22,9 @@ def check_bin(check_str):
             break
     return flag
 
-def parse_vars(lst, vars_dict, PC):
+def parse_vars(lst, vars_dict, vars_count):
     for i in lst:
-        if "var" not in i.lower():
-            PC+=1
-        else:
+        if "var" in i.lower():
             vars_count += 1
             vars_dict[f'var {vars_count}'] = i[4]
 
