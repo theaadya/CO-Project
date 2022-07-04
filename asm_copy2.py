@@ -113,7 +113,7 @@ inst_lst = []
 for i in line:
     ele = i.split()
     inst_lst.append(ele)
-inst_lst=inst_lst[:256]
+#inst_lst=inst_lst[:256]
 for i in line:
     if "var" in i.lower():
         vars_count += 1
@@ -274,7 +274,8 @@ for i in range(len(inst_lst2)):
     if flag and inst_lst2[i][0] == "var":
         flag = False
         print(f'Error in line {vars_line[inst_lst2[i][1]]}: Variable not declared at the begining')
-
+        
+machine_code=machine_code[:256]
 if flag and flag_a and flag_b and flag_c and flag_d and flag_e:
     for i in machine_code:
         sys.stdout.write(i)
