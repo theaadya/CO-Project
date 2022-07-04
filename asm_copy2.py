@@ -113,7 +113,7 @@ inst_lst = []
 for i in line:
     ele = i.split()
     inst_lst.append(ele)
-
+inst_lst=inst_lst[:256]
 for i in line:
     if "var" in i.lower():
         vars_count += 1
