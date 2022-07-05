@@ -230,7 +230,7 @@ if flag == True:
         elif inst_lst2[i][0].lower() == "hlt":
             machine_code.append("0101000000000000")
 
-        elif inst_lst2[i][0].lower() not in opcode and (inst_lst2[i][0].lower() != "var") and (inst_lst2[i][0].lower() != "label:"):
+        elif inst_lst2[i][0].lower() not in opcode and (inst_lst2[i][0].lower() != "var") and (":" not in inst_lst2[i][0].lower()):
             print(f'Error in line {i+1}: Not an instruction syntax')
             flag = False
             break
