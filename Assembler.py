@@ -112,8 +112,6 @@ for i in range(len(inst_lst2)):
 if flag == True:
     for i in range(len(inst_lst2)):
         
-        if len(inst_lst2[i]) == 0:
-            continue
         if inst_lst2[i][0][-1]==":":
             label=inst_lst2[i][0]
             inst_lst2.pop(0)
