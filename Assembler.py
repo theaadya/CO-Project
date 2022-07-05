@@ -114,7 +114,7 @@ if flag == True:
         
         if inst_lst2[i][0][-1]==":":
             label=inst_lst2[i][0]
-            inst_lst2.pop(0)
+            inst_lst2[i].pop(0)
             flag_l=True
         if inst_lst2[i][0].lower() in type_a:
             flag_a = True
