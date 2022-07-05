@@ -259,7 +259,12 @@ try:
             elif inst_lst[i][0].lower() == "hlt":
                 machine_code.append("0101000000000000")
 
-    if len(inst_lst2[-1]) != 1 or inst_lst2[-1][0] != "hlt":
+            elif inst_lst[i][0].lower() not in opcode or inst_lst[i][0].lower() != "var":
+                print(f'Error in line {i+1}: Not an instruction syntax')
+                flag = False
+                break
+
+    if flag and (len(inst_lst2[-1]) != 1 or inst_lst2[-1][0]) != "hlt":
         flag = False
         print(f'Error in line {len(inst_lst2)}: Invalid/Absent hlt declaration') 
         
