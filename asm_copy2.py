@@ -146,7 +146,10 @@ try:
             
             if len(inst_lst2[i]) == 0:
                 continue
-                
+            if inst_lst2[i][0][-1]==":":
+                label=inst_lst2[i][0]
+                inst_lst2.pop(0)
+                flag_l=True
             if inst_lst2[i][0].lower() in type_a:
                 flag_a = True
                 if len(inst_lst2[i]) == 4:
@@ -164,6 +167,7 @@ try:
                     print(f'Error in line {i+1}: Wrong Instruction syntax for {inst_lst[i][0].lower()}')
                     flag_a = False
                     break
+                       
                         
             elif inst_lst2[i][0].lower() in type_b and inst_lst2[i][2][0]=="$":
                 flag_b = True
@@ -235,7 +239,8 @@ try:
                     print(f'Error in line {i+1}: Wrong Instruction syntax for {inst_lst[i][0].lower()}')
                     flag_d = False
                     break
-                    
+            if flag_l:
+                inst_lst2.insert(0,label)
             elif inst_lst2[i][0].lower() in type_e:
                 flag_e = True
                 if len(inst_lst2[i]) == 2:
@@ -280,7 +285,7 @@ try:
         if flag and inst_lst2[i][0] == "var":
             flag = False
             print(f'Error in line {vars_line[inst_lst2[i][1]]}: Variable not declared at the begining')
-            
+         
     if len(machine_code)>256:
         flag_m=False
         print(f'Number of instructions exceed limit')
