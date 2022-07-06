@@ -234,7 +234,7 @@ if flag == True:
 
 hlt_count = sum([inst.count("hlt") for inst in inst_lst2])
 
-if flag and (len(inst_lst2[-1]) != 1 or inst_lst2[-1][0] != "hlt" or hlt_count != 1):
+if flag and (len(inst_lst2[-1]) != 1 or inst_lst2[-1][0] != "hlt"):
     flag = False
     print(f'Error in line {len(inst_lst2)}: Invalid/Absent hlt declaration')
     
