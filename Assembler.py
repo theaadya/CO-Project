@@ -82,7 +82,6 @@ inst_lst = []
 for i in line:
     ele = i.split()
     inst_lst.append(ele)
-#inst_lst=inst_lst[:256]
 for i in line:
     if "var" in i.lower():
         vars_count += 1
@@ -101,8 +100,6 @@ parse_vars(line_copy, vars, PC_var, vars_line)
     
 for i in range(len(inst_lst2)):
     if "var" in inst_lst2[i]:
-        continue
-    elif len(inst_lst2[i]) == 0:
         continue
     else:
         if inst_lst2[i][0][-1] == ":" and len(inst_lst2[i]) > 1 and inst_lst2[i][1] in opcode:
@@ -235,9 +232,11 @@ if flag == True:
             flag = False
             break
 
-if flag and (len(inst_lst2[-1]) != 1 or inst_lst2[-1][0]) != "hlt":
+hlt_count = sum([inst.count("hlt") for inst in inst_lst2])
+
+if flag and (len(inst_lst2[-1]) != 1 or inst_lst2[-1][0] != "hlt" or hlt_count != 1):
     flag = False
-    print(f'Error in line {len(inst_lst2)}: Invalid/Absent hlt declaration') 
+    print(f'Error in line {len(inst_lst2)}: Invalid/Absent hlt declaration')
     
 for i in range(vars_count):
     if inst_lst2[0][0].lower() == "var":
@@ -247,11 +246,10 @@ for i in range(len(inst_lst2)):
     if flag and inst_lst2[i][0] == "var":
         flag = False
         print(f'Error in line {vars_line[inst_lst2[i][1]]}: Variable not declared at the begining')
-        
-if len(machine_code)>256:
-    flag_m=False
+
+if len(machine_code) > 256:
     print(f'Number of instructions exceed limit')
-if flag and flag_a and flag_b and flag_c and flag_d and flag_e:
+elif flag and flag_a and flag_b and flag_c and flag_d and flag_e:
     for i in machine_code:
         sys.stdout.write(i)
         sys.stdout.write("\n")
