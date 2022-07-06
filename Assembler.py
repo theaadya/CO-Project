@@ -163,7 +163,7 @@ if flag == True:
                     Im=DecBin(Imm)
                     machine_code.append(op+r1+Im)
             
-            elif inst_lst[i][0] in type_c:
+            elif inst_lst2[i][0] in type_c:
                 flag_c = True
                 if len(inst_lst2[i]) != 3:
                     flag_c=False
