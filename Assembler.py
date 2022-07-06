@@ -267,11 +267,11 @@ if flag and flag_h:
             flag = False
             print(f'Error in line {vars_line[inst_lst2[i][1]]}: Variable not declared at the begining')
 
-if len(machine_code)>256:
+elif len(machine_code)>256:
     flag_i=False
     print("Assembler cannot write more than 256 lines")
 
-if flag and flag_a and flag_b and flag_c and flag_d and flag_e and flag_i:
+elif flag and flag_a and flag_b and flag_c and flag_d and flag_e and flag_i:
     for i in machine_code:
         sys.stdout.write(i)
         sys.stdout.write("\n")
