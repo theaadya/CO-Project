@@ -248,9 +248,19 @@ if flag == True:
         flag = False
         print(f'Error in line {len(inst_lst2)}: Invalid/Absent hlt declaration')
     
+    for i in range(len(vars)):
+        if inst_lst2[0][0].lower() == "var":
+            inst_lst2.remove(inst_lst2[0])
+
+    for i in range(len(inst_lst2)):
+        if flag and inst_lst2[i][0] == "var":
+            flag = False
+            print(f'Error in line {vars_line[inst_lst2[i][1]]}: Variable not declared at the begining')
+    
 if len(machine_code) > 256:
     print(f'Number of instructions exceed limit')
 elif flag and flag_a and flag_b and flag_c and flag_d and flag_e:
     for i in machine_code:
         sys.stdout.write(i)
         sys.stdout.write("\n")
+        
