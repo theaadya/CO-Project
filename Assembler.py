@@ -38,15 +38,6 @@ def convert(PC_var):
     return str(mem)
 
 
-def parse_vars(lst, vars_dict, PC_var, vars_dict2):
-    for i in lst:
-        if "var" in i.lower():
-            vars_dict[i[4:]] = convert(PC_var)
-            PC_var += 1
-    for i in range(len(lst)):
-        if "var" in lst[i].lower():
-            vars_dict2[lst[i][4:]] = i + 1
-
 def DecBin(string):
     if string.isdigit():
         lst=[int(i) for i in string]
@@ -96,8 +87,6 @@ for i in line:
     inst_lst2.append(ele)
 
 PC_var = len(inst_lst2) - vars_count
-
-parse_vars(line_copy, vars, PC_var, vars_line)
     
 for i in range(len(inst_lst2)):
     if "var" in inst_lst2[i]:
@@ -107,14 +96,34 @@ for i in range(len(inst_lst2)):
             lab_dic[inst_lst2[i][0][:-1].lower()] = DecBin(str(PC_label))
         PC_label += 1
 
+for i in range(len(inst_lst2)):
+    if "var" in inst_lst2[i]:
+        if len(inst_lst2[i]) == 2:
+            if inst_lst2[i][1] not in opcode and inst_lst2[i][1] not in lab_dic and inst_lst2[i][1] not in reg:
+                vars[inst_lst2[i][1].lower()] = convert(PC_var)
+                PC_var += 1
+                vars_line[inst_lst2[i][1].lower()] = i + 1
+            else:
+                print(f'Error in line {i+1}: Not a valid variable')
+                flag = False
+                break
+        else:
+            print(f'Error in line {i+1}: Not a valid variable syntax')
+            flag = False
+            break
+    else:
+        continue
+
 if flag == True:
     for i in range(len(inst_lst2)):
+        
         if not(flag_h):
         
             if inst_lst2[i][0][-1]==":":
                 label=inst_lst2[i][0]
                 inst_lst2[i].pop(0)
                 flag_l=True
+
             if inst_lst2[i][0].lower() in type_a:
                 flag_a = True
                 if len(inst_lst2[i]) == 4:
@@ -132,8 +141,7 @@ if flag == True:
                     print(f'Error in line {i+1}: Wrong Instruction syntax for {inst_lst[i][0].lower()}')
                     flag_a = False
                     break
-                    
-                    
+                      
             elif inst_lst2[i][0].lower() in type_b and inst_lst2[i][2][0]=="$":
                 flag_b = True
                 if len(inst_lst2[i])!=3:
@@ -224,7 +232,6 @@ if flag == True:
                     print(f'Error in line {i+1}: Wrong Instruction syntax for {inst_lst2[i][0].lower()}')
                     flag_e = False
                     break
-        
                 
             elif inst_lst2[i][0].lower() == "hlt":
                 machine_code.append("0101000000000000")
@@ -241,15 +248,6 @@ if flag == True:
         flag = False
         print(f'Error in line {len(inst_lst2)}: Invalid/Absent hlt declaration')
     
-    for i in range(vars_count):
-        if inst_lst2[0][0].lower() == "var":
-            inst_lst2.remove(inst_lst2[0])
-
-    for i in range(len(inst_lst2)):
-        if flag and inst_lst2[i][0] == "var":
-            flag = False
-            print(f'Error in line {vars_line[inst_lst2[i][1]]}: Variable not declared at the begining')
-
 if len(machine_code) > 256:
     print(f'Number of instructions exceed limit')
 elif flag and flag_a and flag_b and flag_c and flag_d and flag_e:
