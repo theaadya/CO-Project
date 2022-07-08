@@ -149,7 +149,7 @@ if flag == True:
             if int(inst_lst2[i][1][1])<0 or int(inst_lst2[i][1][1])>6:
                 flag_b=False
                 print(f'Error in line {i+1}: Undefined Register name')
-            if inst_lst2[i][2].lower()=="flags":
+            if inst_lst2[i][2].lower()=="flag":
                 flag_b=False
                 print(f'Error in line {i+1}: Illegal use of flags register')
             Imm=inst_lst2[i][2][1:]
@@ -167,25 +167,20 @@ if flag == True:
             if len(inst_lst2[i]) != 3:
                 flag_c=False
                 print(f'Error in line {i+1}: Number of operand exceed requirement')
-            if inst_lst2[i][1].lower()=="flags":
-                if int(inst_lst2[i][2][1])<0 or int(inst_lst2[i][2][1])>6:
+            if not(inst_lst2[i][1][1].isnumeric()) or int(inst_lst2[i][1][1])<0 or int(inst_lst2[i][1][1])>6:
                 flag_c=False
                 print(f'Error in line {i+1}: Undefined Register name')
-            if inst_lst2[i][2].lower()=="flags":
+            if inst_lst2[i][2].lower()=="flag":
                 if inst_lst2[i][0]!="mov":
                     flag_c=False
                     print(f'Error in line {i+1}: Illegal use of flag register')
-                if inst_lst2[i][2].lower()=="flags":
-                    if int(inst_lst2[i][1][1])<0 or int(inst_lst2[i][1][1])>6:
-                    flag_c=False
-                    print(f'Error in line {i+1}: Undefined Register name')
+            if inst_lst2[i][1].lower()=="flag":
+                flag_c=False
+                print(f'Error in line {i+1}: Illegal use of flag register')
             if flag_c:
                 op=type_c[inst_lst2[i][0]]
-                if inst_lst2[i][1]=="flags":
-                  r1="111"
-                else:
-                  r1=reg[inst_lst2[i][1].lower()]
-                if inst_lst2[i][2].lower()=="flags":
+                r1=reg[(inst_lst2[i][1]).lower()]
+                if inst_lst2[i][2].lower()=="flag":
                     r2="111"
                 else:
                     r2=reg[(inst_lst2[i][2]).lower()]
@@ -251,7 +246,7 @@ if flag == True:
             flag = False
             break
 
-if flag and (inst_lst2[-1][0] != "hlt") and flag_h:
+if flag and (len(inst_lst2[-1]) != 1 or inst_lst2[-1][0] != "hlt") and flag_h:
     flag = False
     print(f'Error in line {len(inst_lst2)}: Invalid/Absent hlt declaration')
 
@@ -271,3 +266,4 @@ if flag and flag_a and flag_b and flag_c and flag_d and flag_e and flag_h:
     for i in machine_code:
         sys.stdout.write(i)
         sys.stdout.write("\n")
+        
