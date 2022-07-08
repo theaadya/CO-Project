@@ -167,13 +167,18 @@ if flag == True:
             if len(inst_lst2[i]) != 3:
                 flag_c=False
                 print(f'Error in line {i+1}: Number of operand exceed requirement')
-            if not(inst_lst2[i][1][1].isnumeric()) or int(inst_lst2[i][1][1])<0 or int(inst_lst2[i][1][1])>6:
+            if inst_lst2[i][1].lower()=="flags":
+                if int(inst_lst2[i][2][1])<0 or int(inst_lst2[i][2][1])>6:
                 flag_c=False
                 print(f'Error in line {i+1}: Undefined Register name')
             if inst_lst2[i][2].lower()=="flags":
                 if inst_lst2[i][0]!="mov":
                     flag_c=False
                     print(f'Error in line {i+1}: Illegal use of flag register')
+                if inst_lst2[i][2].lower()=="flags":
+                    if int(inst_lst2[i][1][1])<0 or int(inst_lst2[i][1][1])>6:
+                    flag_c=False
+                    print(f'Error in line {i+1}: Undefined Register name')
             if flag_c:
                 op=type_c[inst_lst2[i][0]]
                 if inst_lst2[i][1]=="flags":
