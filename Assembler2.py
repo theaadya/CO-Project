@@ -149,7 +149,7 @@ if flag == True:
             if int(inst_lst2[i][1][1])<0 or int(inst_lst2[i][1][1])>6:
                 flag_b=False
                 print(f'Error in line {i+1}: Undefined Register name')
-            if inst_lst2[i][2].lower()=="flag":
+            if inst_lst2[i][2].lower()=="flags":
                 flag_b=False
                 print(f'Error in line {i+1}: Illegal use of flags register')
             Imm=inst_lst2[i][2][1:]
@@ -170,17 +170,17 @@ if flag == True:
             if not(inst_lst2[i][1][1].isnumeric()) or int(inst_lst2[i][1][1])<0 or int(inst_lst2[i][1][1])>6:
                 flag_c=False
                 print(f'Error in line {i+1}: Undefined Register name')
-            if inst_lst2[i][2].lower()=="flag":
+            if inst_lst2[i][2].lower()=="flags":
                 if inst_lst2[i][0]!="mov":
                     flag_c=False
                     print(f'Error in line {i+1}: Illegal use of flag register')
             if flag_c:
                 op=type_c[inst_lst2[i][0]]
-                if inst_lst2[i][1]=="flag":
+                if inst_lst2[i][1]=="flags":
                   r1="111"
                 else:
                   r1=reg[inst_lst2[i][1].lower()]
-                if inst_lst2[i][2].lower()=="flag":
+                if inst_lst2[i][2].lower()=="flags":
                     r2="111"
                 else:
                     r2=reg[(inst_lst2[i][2]).lower()]
