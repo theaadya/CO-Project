@@ -246,7 +246,7 @@ if flag == True:
             flag = False
             break
 
-if flag and (len(inst_lst2[-1]) != 1 or inst_lst2[-1][0] != "hlt") and flag_h:
+if flag and (inst_lst2[-1][0] != "hlt") and flag_h:
     flag = False
     print(f'Error in line {len(inst_lst2)}: Invalid/Absent hlt declaration')
 
