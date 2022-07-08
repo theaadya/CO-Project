@@ -7,7 +7,7 @@ type_c = {"div": "10111", "not": "11101", "cmp": "11110", "mov": "10011"} # mov 
 type_d = {"st": "10101", "ld": "10100"}
 type_e = {"jmp": "11111", "jlt": "01100", "je": "01111", "jgt": "01101"}
 reg = {"r0": "000", "r1": "001", "r2": "010", "r3": "011", "r4": "100", "r5": "101", "r6": "110", "r7": "111"}
-opcode = {"add": "10000", "sub": "10001", "mul": "10110", "xor": "11010", "or": "11011", "and": "11100", "ls":"11001", "rs":"11000", "mov":"10010","div": "10111", "not": "11101", "cmp": "11110", "mov": "10011","st": "10100", "ld": "10101","jmp": "11111", "jlt": "01100", "je": "01111", "jgt": "01101"}
+opcode = {"add": "10000", "sub": "10001", "mul": "10110", "xor": "11010", "or": "11011", "and": "11100", "ls":"11001", "rs":"11000", "mov":"10010","div": "10111", "not": "11101", "cmp": "11110", "mov": "10011","st": "10100", "ld": "10101","jmp": "11111", "jlt": "01100", "je": "01111", "jgt": "01101", "hlt": "01010"}
 lab_dic = {} 
 vars = {}
 vars_line = {}
@@ -149,7 +149,7 @@ if flag == True:
             if int(inst_lst2[i][1][1])<0 or int(inst_lst2[i][1][1])>6:
                 flag_b=False
                 print(f'Error in line {i+1}: Undefined Register name')
-            if inst_lst2[i][2].lower()=="flag":
+            if inst_lst2[i][2].lower()=="flags":
                 flag_b=False
                 print(f'Error in line {i+1}: Illegal use of flags register')
             Imm=inst_lst2[i][2][1:]
@@ -167,23 +167,20 @@ if flag == True:
             if len(inst_lst2[i]) != 3:
                 flag_c=False
                 print(f'Error in line {i+1}: Number of operand exceed requirement')
-            if not(inst_lst2[i][1][1].isnumeric()) or int(inst_lst2[i][1][1])<0 or int(inst_lst2[i][1][1])>6:
+            if not(inst_lst2[i][2][1].isnumeric()) or int(inst_lst2[i][2][1])<0 or int(inst_lst2[i][2][1])>6:
                 flag_c=False
                 print(f'Error in line {i+1}: Undefined Register name')
-            if inst_lst2[i][2].lower()=="flag":
+            if inst_lst2[i][2].lower()=="flags":
                 if inst_lst2[i][0]!="mov":
                     flag_c=False
                     print(f'Error in line {i+1}: Illegal use of flag register')
-            if inst_lst2[i][1].lower()=="flag":
-                flag_c=False
-                print(f'Error in line {i+1}: Illegal use of flag register')
             if flag_c:
                 op=type_c[inst_lst2[i][0]]
-                r1=reg[(inst_lst2[i][1]).lower()]
-                if inst_lst2[i][2].lower()=="flag":
-                    r2="111"
+                if inst_lst2[i][1].lower() == "flags":
+                  r1="111"
                 else:
-                    r2=reg[(inst_lst2[i][2]).lower()]
+                  r1=reg[inst_lst2[i][1].lower()]
+                r2=reg[(inst_lst2[i][2]).lower()]
                 machine_code.append(op+"00000"+r1+r2)  
             
         elif inst_lst2[i][0].lower() in type_d:  
@@ -266,4 +263,3 @@ if flag and flag_a and flag_b and flag_c and flag_d and flag_e and flag_h:
     for i in machine_code:
         sys.stdout.write(i)
         sys.stdout.write("\n")
-        
