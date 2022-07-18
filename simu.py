@@ -25,8 +25,10 @@ for i in bin_list:
         #type_d
         reg1=i[5:8]
         mem_addr=int(i[8:16])
+        mem_addr=bintodec(mem_addr)
     elif opcode=="11111" or opcode=="01100" or opcode=="01101" or opcode=="01111":
         #type_e
         mem_addr=int(i[8:16])
+        mem_addr=bintodec(mem_addr)
     elif opcode=="01010":
         #hlt
