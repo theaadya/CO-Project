@@ -38,7 +38,7 @@ for i in bin_list:
         reg2=i[10:13]
         reg3=i[13:16]
         if opcode=="10000":
-            val3=int(regval[regnum[reg1]]) + int(regval[regnum[reg2]])
+            val3=str(int(regval[regnum[reg1]]) + int(regval[regnum[reg2]]))
             regval[regnum[reg3]]=("0"*(16-len(val3)))+val3
         elif opcode=="10001":
             val1=int(regval[regnum[reg1]])
@@ -53,38 +53,38 @@ for i in bin_list:
         elif opcode=="11010":#bitwise xor
             val1=regval[regnum[reg1]]
             val2=regval[regnum[reg2]]
-#             diff=len(val1)-len(val2)
-#             if diff>0:
-#                 val2=("0"*diff)+val2
-#             elif diff<0:
-#                 val1=("0"*diff)+val1
+#           diff=len(val1)-len(val2)
+#           if diff>0:
+#               val2=("0"*diff)+val2
+#           elif diff<0:
+#               val1=("0"*diff)+val1
             val3=""
             for i in range(16):
-#             for i in range(len(val1)):
+#           for i in range(len(val1)):
                 val3+=perform_xor(val1[i],val2[i])
             #regval[regnum[reg3]]=("0"*(16-len(val3)))+val3
             regval[regnum[reg3]]=val3
         elif opcode=="11011":#bitwise or
             val1=regval[regnum[reg1]]
             val2=regval[regnum[reg2]]
-#             diff=len(val1)-len(val2)
-#             if diff>0:
-#                 val2=("0"*diff)+val2
-#             elif diff<0:
-#                 val1=("0"*diff)+val1
+#           diff=len(val1)-len(val2)
+#           if diff>0:
+#               val2=("0"*diff)+val2
+#           elif diff<0:
+#               val1=("0"*diff)+val1
             val3=""
             for i in range(16):
-#             for i in range(len(val1)):
+#           for i in range(len(val1)):
                 val3+=perform_or(val1[i],val2[i])
             regval[regnum[reg3]]=val3
         else:#bitwise and
             val1=regval[regnum[reg1]]
             val2=regval[regnum[reg2]]
-#             diff=len(val1)-len(val2)
-#             if diff>0:
-#                 val2=("0"*diff)+val2
-#             elif diff<0:
-#                 val1=("0"*diff)+val1
+#           diff=len(val1)-len(val2)
+#           if diff>0:
+#               val2=("0"*diff)+val2
+#           elif diff<0:
+#               val1=("0"*diff)+val1
             val3=""
             for i in range(16):
 #           for i in range(len(val1)):
