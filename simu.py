@@ -1,5 +1,6 @@
 regnum={"000":"r0" , "001":"r1" , "010":"r2" , "011":"r3" , "100":"r4" , "101":"r5" , "110":"r6"}
 regval={"r0":"0000000000000000" , "r1":"0000000000000000" , "r2":"0000000000000000" , "r3":"0000000000000000" , "r4":"0000000000000000" , "r5":"0000000000000000" , "r6":"0000000000000000"}
+flag_dic={"v":"0" , "l":"0" , "g":"0" , "e":"0"}
 def bintodec(n):
     num=0
     n=str(n)
@@ -9,7 +10,14 @@ def bintodec(n):
         num+=((2**(pow))*b)
         pow+=1
     return num
-
+def dectobin(n):
+    num=n
+    val=""
+    while num>0:
+        val+=str(num%2)
+        num=num//2
+    val=val[::-1]
+    return int(val)
 def perform_xor(a,b):
     if a==b:
         return "0"
@@ -45,7 +53,7 @@ for i in bin_list:
             val2=int(regval[regnum[reg2]])
             if val2>val1:
                 regval[regnum[reg3]]="0000000000000000"
-                #set overflow flag
+                flag_dic["v"]="1"
             else:
                 val3=str(val1-val2)
                 regval[regnum[reg3]]=("0"*(16-len(val3)))+val3
@@ -109,7 +117,29 @@ for i in bin_list:
             for i in range(16)
 #           for i in range(len(regval[regnum[reg1]])):
                 notval1+=perform_not(regval[regnum[reg1]])
-            regval[regnum[reg2]]=not_val1
+            regval[regnum[reg2]]=notval1
+        elif opcode=="10111":
+            val1=bintodec(int(regval[regnum[reg1]]))
+            val2=bintodec(int(regval[regnum[reg2]]))
+            q=val1//val2
+            r=val1%val2
+            q=str(dectobin(q))
+            r=str(dectobin(r))
+            regval["r0"]=("0"*(16-len(q)))+q
+            regval["r1"]=("0"*(16-len(r)))+r
+        elif opcode=="10011":
+            regval[regnum[reg2]]=regval[regnum[reg1]]
+        else:
+            val1=int(regval[regnum[reg1]])
+            val2=int(regval[regnum[reg2]])
+            if val1<val2:
+                flag_dic["l"]="1"
+            elif val1>val2:
+                flag_dic["g"]="1"
+            else:
+                flag_dic["e"]="1"
+
+
     elif opcode=="10100" or opcode=="10101":
         #type_d
         reg1=i[5:8]
