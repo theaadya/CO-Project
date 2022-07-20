@@ -93,6 +93,12 @@ for i in bin_list:
     elif opcode=="10010" or opcode=="11000" or opcode=="11001":
         #type_b
         reg1=i[5:8]
+        imm=i[8:]
+        if opcode=="10010":
+            regval[regnum[reg1]]=("0"*8)+imm
+        elif opcode=="11000":
+
+        else:
 
     elif opcode=="10011" or opcode=="10111" or opcode=="11101" or opcode=="11110":
         #type_c
