@@ -1,3 +1,5 @@
+regnum={"000":"r0" , "001":"r1" , "010":"r2" , "011":"r3" , "100":"r4" , "101":"r5" , "110":"r6"}
+regval={"r0":0 , "r1":0 , "r2":0 , "r3":0 , "r4":0 , "r5":0 , "r6":0}
 def bintodec(n):
     num=0
     n=str(n)
@@ -7,6 +9,22 @@ def bintodec(n):
         num+=((2**(pow))*b)
         pow+=1
     return num
+
+def perform_xor(a,b):
+    if a==b:
+        return "0"
+    else:
+        return "1"
+def perform_or(a,b):
+    if a=="1" or b=="1":
+        return "1"
+    else:
+        return "0"
+def perform_and(a,b):
+    if a=="0" or b=="0":
+        return "0"
+    else:
+        return "1"
 for i in bin_list:
     opcode=i[:5]
     if opcode=="10000" or opcode=="10001" or opcode=="10110" or opcode=="11010" or opcode=="11011" or opcode=="11100":
@@ -14,6 +32,53 @@ for i in bin_list:
         reg1=i[7:10]
         reg2=i[10:13]
         reg3=i[13:16]
+        if opcode=="10000":
+            regval[regnum[reg3]]=regval[regnum[reg1]] + regval[regnum[reg2]]
+        elif opcode=="10001":
+            val1=regval[regnum[reg1]]
+            val2=regval[regnum[reg2]]
+            if val2>val1:
+                regval[regnum[reg3]]=0
+                #set overflow flag
+            else:
+                regval[regnum[reg3]]=val1-val2
+        elif opcode=="10110":#multiply
+        elif opcode=="11010":#bitwise xor
+            val1=str(regval[regnum[reg1]])
+            val2=str(regval[regnum[reg2]])
+            diff=len(val1)-len(val2)
+            if diff>0:
+                val2=("0"*diff)+val2
+            elif diff<0:
+                val1=("0"*diff)+val1
+            val3=""
+            for i in range(len(val1)):
+                val3+=perform_xor(val1[i],val2[i])
+            regval[regnum[reg3]]=int(val3)
+        elif opcode=="11011":#bitwise or
+            val1=str(regval[regnum[reg1]])
+            val2=str(regval[regnum[reg2]])
+            diff=len(val1)-len(val2)
+            if diff>0:
+                val2=("0"*diff)+val2
+            elif diff<0:
+                val1=("0"*diff)+val1
+            val3=""
+            for i in range(len(val1)):
+                val3+=perform_or(val1[i],val2[i])
+            regval[regnum[reg3]]=int(val3)
+        else:#bitwise and
+            val1=str(regval[regnum[reg1]])
+            val2=str(regval[regnum[reg2]])
+            diff=len(val1)-len(val2)
+            if diff>0:
+                val2=("0"*diff)+val2
+            elif diff<0:
+                val1=("0"*diff)+val1
+            val3=""
+            for i in range(len(val1)):
+                val3+=perform_and(val1[i],val2[i])
+            regval[regnum[reg3]]=int(val3)
     elif opcode=="10010" or opcode=="11000" or opcode=="11001":
         #type_b
         reg1=i[5:8]
