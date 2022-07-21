@@ -110,6 +110,7 @@ for i in bin_list:
 #           for i in range(len(val1)):
                 val3+=perform_and(val1[i],val2[i])
             regval[regnum[reg3]]=val3
+            
     elif opcode=="10010" or opcode=="11000" or opcode=="11001":
         #type_b
         reg1=i[5:8]
@@ -117,8 +118,17 @@ for i in bin_list:
         if opcode=="10010":
             regval[regnum[reg1]]=("0"*8)+imm
         elif opcode=="11000":
-
+            #right shift
+            imm=bintodec(int(imm))
+            st1="0"*imm
+            st2=(regval[regnum[reg1]][:(-imm)])
+            regval[regnum[reg1]]=st1+st2
         else:
+            #left shift
+            imm=bintodec(int(imm))
+            st1=regval[regnum[reg1]][imm:]
+            st2="0"*imm
+            regval[regnum[reg1]]=st1+st2
 
     elif opcode=="10011" or opcode=="10111" or opcode=="11101" or opcode=="11110":
         #type_c
