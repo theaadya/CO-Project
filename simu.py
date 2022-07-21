@@ -58,6 +58,18 @@ for i in bin_list:
                 val3=str(val1-val2)
                 regval[regnum[reg3]]=("0"*(16-len(val3)))+val3
         elif opcode=="10110":#multiply
+            val1=int(regval[regnum[reg1]])
+            val2=int(regval[regnum[reg2]])
+            val1=bintodec(val1)
+            val2=bintodec(val2)
+            res=str(dectobin(val1*val2))
+            diff=16-len(val3)
+            if diff<0:
+                flag_dic["v"]="1"
+                val3=val3[(len(val3)-16):]
+                regval[regnum[reg3]]=val3
+            else:
+                regval[regnum[reg3]]=("0"*diff)+val3
         elif opcode=="11010":#bitwise xor
             val1=regval[regnum[reg1]]
             val2=regval[regnum[reg2]]
