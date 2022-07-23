@@ -6,6 +6,8 @@ flag_dic={"v":"0" , "l":"0" , "g":"0" , "e":"0"}
 
 s = sys.stdin.read()
 machine_code = s.split("\n")
+for i in range(machine_code.count("")):
+    machine_code.remove("")
 
 def reset_flags():
     for i in flag_dic.keys():
@@ -161,3 +163,16 @@ for i in machine_code:
         mem_addr=bintodec(mem_addr)
     # elif opcode=="01010":
         #hlt
+        
+# code for printing memory
+var_mem = []
+zero_str = "0000000000000000"
+for i in machine_code:
+    if i[:5] == "10100" or i[:5] == "10101":
+        var_mem.append("00000000"+i[8:])
+    print(i, end = "\n")
+for i in range(len(var_mem)):
+    print(var_mem[i], end = "\n")
+zero_nums = 256 - (len(machine_code) + len(var_mem))
+for i in range(zero_nums):
+    print(zero_str, end = "\n")
