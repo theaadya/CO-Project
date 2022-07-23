@@ -57,22 +57,20 @@ for i in machine_code:
         reg2=i[10:13]
         reg3=i[13:16]
         if opcode=="10000":
-            val3=str(int(regval[regnum[reg1]]) + int(regval[regnum[reg2]]))
+            val3=str(dectobin(bintodec(int(regval[regnum[reg1]])) + bintodec(int(regval[regnum[reg2]]))))
             regval[regnum[reg3]]=("0"*(16-len(val3)))+val3
         elif opcode=="10001":
-            val1=int(regval[regnum[reg1]])
-            val2=int(regval[regnum[reg2]])
+            val1=bintodec(int(regval[regnum[reg1]]))
+            val2=bintodec(int(regval[regnum[reg2]]))
             if val2>val1:
                 regval[regnum[reg3]]="0000000000000000"
                 flag_dic["v"]="1"
             else:
-                val3=str(val1-val2)
+                val3=str(dectobin(val1-val2))
                 regval[regnum[reg3]]=("0"*(16-len(val3)))+val3
         elif opcode=="10110":#multiply
-            val1=int(regval[regnum[reg1]])
-            val2=int(regval[regnum[reg2]])
-            val1=bintodec(val1)
-            val2=bintodec(val2)
+            val1=bintodec(int(regval[regnum[reg1]]))
+            val2=bintodec(int(regval[regnum[reg2]]))
             res=str(dectobin(val1*val2))
             diff=16-len(val3)
             if diff<0:
