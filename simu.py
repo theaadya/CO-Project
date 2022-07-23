@@ -159,7 +159,8 @@ for i in machine_code:
         #type_e
         mem_addr=int(i[8:16])
         mem_addr=bintodec(mem_addr)
-    # elif opcode=="01010":
+    #elif opcode=="00000" or opcode=="00001" or opcode=="00010":#floating point operations
+    #elif opcode=="01010":
         #hlt
         
 # code for printing memory
