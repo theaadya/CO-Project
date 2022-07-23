@@ -77,41 +77,22 @@ for i in bin_list:
         elif opcode=="11010":#bitwise xor
             val1=regval[regnum[reg1]]
             val2=regval[regnum[reg2]]
-#           diff=len(val1)-len(val2)
-#           if diff>0:
-#               val2=("0"*diff)+val2
-#           elif diff<0:
-#               val1=("0"*diff)+val1
             val3=""
             for i in range(16):
-#           for i in range(len(val1)):
                 val3+=perform_xor(val1[i],val2[i])
-            #regval[regnum[reg3]]=("0"*(16-len(val3)))+val3
             regval[regnum[reg3]]=val3
         elif opcode=="11011":#bitwise or
             val1=regval[regnum[reg1]]
             val2=regval[regnum[reg2]]
-#           diff=len(val1)-len(val2)
-#           if diff>0:
-#               val2=("0"*diff)+val2
-#           elif diff<0:
-#               val1=("0"*diff)+val1
             val3=""
             for i in range(16):
-#           for i in range(len(val1)):
                 val3+=perform_or(val1[i],val2[i])
             regval[regnum[reg3]]=val3
         else:#bitwise and
             val1=regval[regnum[reg1]]
             val2=regval[regnum[reg2]]
-#           diff=len(val1)-len(val2)
-#           if diff>0:
-#               val2=("0"*diff)+val2
-#           elif diff<0:
-#               val1=("0"*diff)+val1
             val3=""
             for i in range(16):
-#           for i in range(len(val1)):
                 val3+=perform_and(val1[i],val2[i])
             regval[regnum[reg3]]=val3
             
@@ -141,7 +122,6 @@ for i in bin_list:
         if opcode=="11101":
             notval1=""
             for i in range(16)
-#           for i in range(len(regval[regnum[reg1]])):
                 notval1+=perform_not(regval[regnum[reg1]])
             regval[regnum[reg2]]=notval1
         elif opcode=="10111":
@@ -164,7 +144,6 @@ for i in bin_list:
                 flag_dic["g"]="1"
             else:
                 flag_dic["e"]="1"
-
 
     elif opcode=="10100" or opcode=="10101":
         #type_d
