@@ -1,3 +1,5 @@
+import sys
+
 regnum={"000":"r0" , "001":"r1" , "010":"r2" , "011":"r3" , "100":"r4" , "101":"r5" , "110":"r6"}
 regval={"r0":"0000000000000000" , "r1":"0000000000000000" , "r2":"0000000000000000" , "r3":"0000000000000000" , "r4":"0000000000000000" , "r5":"0000000000000000" , "r6":"0000000000000000"}
 flag_dic={"v":"0" , "l":"0" , "g":"0" , "e":"0"}
@@ -45,7 +47,7 @@ def perform_not(a):
         return "1"
     else:
         return "0"
-for i in bin_list:
+for i in machine_code:
     opcode=i[:5]
     if opcode=="10000" or opcode=="10001" or opcode=="10110" or opcode=="11010" or opcode=="11011" or opcode=="11100":
         #type_a
@@ -124,7 +126,7 @@ for i in bin_list:
         reg2=i[13:16]
         if opcode=="11101":
             notval1=""
-            for i in range(16)
+            for i in range(16):
                 notval1+=perform_not(regval[regnum[reg1]])
             regval[regnum[reg2]]=notval1
         elif opcode=="10111":
@@ -157,5 +159,5 @@ for i in bin_list:
         #type_e
         mem_addr=int(i[8:16])
         mem_addr=bintodec(mem_addr)
-    elif opcode=="01010":
+    # elif opcode=="01010":
         #hlt
