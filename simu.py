@@ -13,9 +13,19 @@ def reset_flags():
     for i in flag_dic.keys():
         flag_dic[i]="0"
 def bintodec(n):
-    num=0
     n=str(n)
+    if "." in n:
+        ind=n.index(".")
+        num1=bintodec(int(n[:(ind+1)]))
+        pow=-1
+        num2=0
+        for j in n[(ind+1):]:
+            b=int(j)
+            num2+=b*(2**pow)
+            pow-=1
+        return (num1+num2)
     pow=0
+    num=0
     for i in n[::-1]:
         b=int(i)
         num+=((2**(pow))*b)
@@ -29,6 +39,23 @@ def dectobin(n):
         num=num//2
     val=val[::-1]
     return int(val)
+
+def ieeetodec(num):
+    #input is string, output is num
+    exp=num[:3]
+    man=num[3:]
+    exp=2**(bintodec(int(exp))-3)
+    val="1"
+    val+=man[:exp]
+    val+="."
+    if exp<len(man):
+        val+=man[exp:]
+    val=bintodec(float(val))
+    return val
+
+def dectoieee(num):
+    #input is str, output is num
+
 def perform_xor(a,b):
     if a==b:
         return "0"
@@ -159,7 +186,41 @@ for i in machine_code:
         #type_e
         mem_addr=int(i[8:16])
         mem_addr=bintodec(mem_addr)
-    #elif opcode=="00000" or opcode=="00001" or opcode=="00010":#floating point operations
+    elif opcode=="00000" or opcode=="00001" or opcode=="00010":
+        reg1=i[7:10]
+        reg2=i[10:13]
+        reg3=i[13:16]
+        if opcode=="00000":#f_add
+            val1=regval[regnum[reg1]][-8:]
+            val2=regval[regnum[reg2]][-8:]
+            val=dectoieee(ieeetodec(val1)+ieeetodec(val2))
+            #check for range and put value in reg3
+            # diff=8-len(val)
+            # if diff<0:
+            #     regval[regnum[reg3]]="0"+val[-8:]
+            #     flag_dic["v"]="1"
+            # else:
+            #     regval[regnum[reg3]]=("0"*(8+diff))+val
+        elif opcode=="00001":
+            val1=regval[regnum[reg1]][-8:]
+            val2=regval[regnum[reg2]][-8:]
+            val=ieeetodec(val1)-ieeetodec(val2)
+            #check for range everywhere
+            if val<0:
+                regval[regnum[reg3]]="0"*16
+                flag_dic["v"]="1"
+            else:
+                val3=str(dectoieee(val))
+                regval[regnum[reg3]]=("0"*(16-len(val3)))+val3
+
+        else:
+            #f_mov
+            reg1=i[5:8]
+            imm=i[8:]   #check for range
+            #check for invalid
+            imm=dectoieee(imm)
+            regval[regnum[reg1]]=("0"*(16-len(imm)))+imm
+
     #elif opcode=="01010":
         #hlt
         
