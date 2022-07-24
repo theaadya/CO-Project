@@ -60,6 +60,28 @@ def ieeetodec(num):
 def dectoieee(num):
     #inp is str, output is str
     num=dectobin(str(float(num)))
+    num=str(num)
+    flag1=False
+    flag2=False
+    for i in range(len(num)):
+        if flag1==False and num[i]=="1":
+            ind1=i
+            flag1=True
+        elif flag2==False and num[i]==".":
+            ind2=i
+            flag2=True
+        if flag1 and flag2:
+            break
+    if ind2>ind1:
+        ind2_new=ind1+1
+    else:
+        ind2_new=ind1-ind2+1
+    pow=ind2-ind2_new
+    st_o=num[:ind2]+num[ind2+1:]
+    st_o=st_o[:ind2_new]+"."+st_o[(ind2_new+1):]
+    pow+=3
+    pow=dectobin(str(pow))
+    return ((str(pow)[-3:])+st_o[:5])
 
 def perform_xor(a,b):
     if a==b:
@@ -198,7 +220,8 @@ for i in machine_code:
         if opcode=="00000":#f_add
             val1=regval[regnum[reg1]][-8:]
             val2=regval[regnum[reg2]][-8:]
-            val=dectoieee(ieeetodec(val1)+ieeetodec(val2))
+            val=ieeetodec(val1)+ieeetodec(val2)
+            #val is a num
             #check for range and put value in reg3
             # diff=8-len(val)
             # if diff<0:
