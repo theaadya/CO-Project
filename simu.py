@@ -210,7 +210,7 @@ for i in machine_code:
                 regval[regnum[reg3]]="0"*16
                 flag_dic["v"]="1"
             else:
-                val3=str(dectoieee(val))
+                val3=dectoieee(val)
                 regval[regnum[reg3]]=("0"*(16-len(val3)))+val3
 
         else:
