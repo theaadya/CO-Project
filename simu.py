@@ -32,13 +32,18 @@ def bintodec(n):
         pow+=1
     return num
 def dectobin(n):
-    num=n
-    val=""
-    while num>0:
-        val+=str(num%2)
-        num=num//2
-    val=val[::-1]
-    return int(val)
+    if "." in n:
+        ind=n.index(".")
+        st1=str(dectobin(n[:ind]))
+        st2=""
+        num=float(n[ind:])
+        while int(num[(ind+1):])!=0:
+            num=2*num
+            ind=num.index(".")
+            st2+=str(int(num[:ind]))
+        return float(st1+"."+st2)
+    num=int(n)
+    return bin(num)
 
 def ieeetodec(num):
     #input is string, output is num
@@ -52,9 +57,9 @@ def ieeetodec(num):
         val+=man[exp:]
     val=bintodec(float(val))
     return val
-
 def dectoieee(num):
-    #input is str, output is num
+    #inp is str, output is str
+    num=dectobin(str(float(num)))
 
 def perform_xor(a,b):
     if a==b:
@@ -93,12 +98,12 @@ for i in machine_code:
                 regval[regnum[reg3]]="0000000000000000"
                 flag_dic["v"]="1"
             else:
-                val3=str(dectobin(val1-val2))
+                val3=str(dectobin(str(val1-val2)))
                 regval[regnum[reg3]]=("0"*(16-len(val3)))+val3
         elif opcode=="10110":#multiply
             val1=bintodec(int(regval[regnum[reg1]]))
             val2=bintodec(int(regval[regnum[reg2]]))
-            res=str(dectobin(val1*val2))
+            res=str(dectobin(str(val1*val2)))
             diff=16-len(val3)
             if diff<0:
                 flag_dic["v"]="1"
@@ -161,8 +166,8 @@ for i in machine_code:
             val2=bintodec(int(regval[regnum[reg2]]))
             q=val1//val2
             r=val1%val2
-            q=str(dectobin(q))
-            r=str(dectobin(r))
+            q=str(dectobin(str(q)))
+            r=str(dectobin(str(r)))
             regval["r0"]=("0"*(16-len(q)))+q
             regval["r1"]=("0"*(16-len(r)))+r
         elif opcode=="10011":
