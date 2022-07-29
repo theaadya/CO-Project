@@ -168,8 +168,8 @@ def simulator(machine_code,regval,flag_dic):
 
         else:
             if opcode=="01100" or "01101" or "01111" or "11111": #jump, flag not reset
-                mem_addr=int(i[8:])
-                label_addr=bintodec(mem_addr)
+                mem_addr=i[8:]
+                label_addr=int(mem_addr,2)
                 
                 if opcode=="01100" and flag_dic["l"]==1: #less than
                     new_machine_code=machine_code[label_addr+1:]
