@@ -57,10 +57,14 @@ def perform_not(a):
     else:
         return "0"
 
-def convertFloat(v):
-    exp = bin(int(v[:3]))
+def convertFloat(v):        # converts 8 bit binary to float
+    exp = int(v[:3], 2)
     num = "1." + v[3:]
     numList = list(num)
+    zero = exp - 4
+    while zero > 0:
+        numList.append("0")
+        zero -= 1
     while exp > 0:
         dot = numList.index(".")
         digit = numList[dot + 1]
