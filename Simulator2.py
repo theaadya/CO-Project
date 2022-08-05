@@ -13,6 +13,7 @@ for idx, val in enumerate(machine_code):
 def reset_flags():
     for i in flag_dic.keys():
         flag_dic[i]="0"
+
 def bintodec(n):
     num=0
     n=str(n)
@@ -22,6 +23,7 @@ def bintodec(n):
         num+=((2**(pow))*b)
         pow+=1
     return num
+
 def dectobin(n):
     num=n
     val=""
@@ -30,41 +32,78 @@ def dectobin(n):
         num=num//2
     val=val[::-1]
     return int(val)
+
 def perform_xor(a,b):
     if a==b:
         return "0"
     else:
         return "1"
+
 def perform_or(a,b):
     if a=="1" or b=="1":
         return "1"
     else:
         return "0"
+
 def perform_and(a,b):
     if a=="0" or b=="0":
         return "0"
     else:
         return "1"
+
 def perform_not(a):
     if a=="0":
         return "1"
     else:
         return "0"
-def convertFloat(val):
-    v = val[8:]
+
+def convertFloat(v):
     exp = bin(int(v[:3]))
     num = "1." + v[3:]
+    numList = list(num)
     while exp > 0:
-        dot = num.index(".")
-        digit = num[dot + 1]
-        num[dot] = digit
-        num[dot + 1] = "."
+        dot = numList.index(".")
+        digit = numList[dot + 1]
+        numList[dot] = digit
+        numList[dot + 1] = "."
         exp -= 1
+    num = "".join(numList)
     float_num = num.split('.')
     return int(float_num[0], 2) + int(float_num[1], 2) / 2.**len(float_num[1])
 
 def convertCSE112(val):
-
+    if 1 < val < 128:
+        dot = val.index(".")
+        int_num = bin(int(val[:dot])).replace("0b", "")
+        frac_num = val[dot:]
+        frac_bin = "."
+        precision = 6 - len(str(int_num))
+        while precision:
+            frac_num = float(frac_num)
+            frac_num *= 2
+            bit = (frac_num)//1
+            if (bit == 1):
+                frac_num -= bit
+                frac_bin += "1"
+            else:
+                frac_bin += "0"
+            precision -= 1
+        mantissa = str(int_num) + str(frac_bin)
+        exp = 0
+        m_list = list(mantissa)
+        while m_list.index(".") != 1:
+            dot = m_list.index(".")
+            digit = m_list[dot - 1]
+            m_list[dot] = digit
+            m_list[dot - 1] = "."
+            exp += 1
+        num = "".join(m_list)
+        if num == convertFloat(num):
+            return num
+        else:
+            return False
+    else:
+        return False
 
 var_mem = []
 memory = []
@@ -175,34 +214,41 @@ def main(i,var_dic):
         elif opcode=="10011":   # mov
             regval[regnum[reg2]]=regval[regnum[reg1]]
 
-
     #type_d
     if opcode=="10100" or opcode=="10101":
         reg=i[5:8]
         mem_addr = i[8:]
         var_address = int(mem_addr,2)
         if opcode=="10100":     #load instruction
-            regval[regnum[reg]]=var_dic[var_address]
+            regval[regnum[reg]] = memory[var_address]
         if opcode=="10101":     #store instruction
-            var_dic[var_address]=regval[regnum[reg]]
+            memory[var_address] = regval[regnum[reg]]
         
     elif opcode=="00000" or opcode=="00001" or opcode=="00010":     #floating point operations
         r1 = i[7:10]
         r2 = i[10:13]
         r3 = i[13:16]
-        val1 = convertFloat(regval[regnum[r1]])
-        val2 = convertFloat(regval[regnum[r2]])
-        if opcode == "00000":
-            val3 = val1 + val2
-            if convertCSE112(val3) == False:
+        val1 = convertFloat(regval[regnum[r1]][8:])
+        val2 = convertFloat(regval[regnum[r2]][8:])
+        if opcode == "00000":       # addf
+            val3 = float(val1) + float(val2)
+            if convertCSE112(str(val3)) == False:
                 regval[regnum[r3]] = "0000000000000000"
                 flag_dic["v"]="1"
             else:
-                val = convertCSE112(val3)
+                val = convertCSE112(str(val3))
                 regval[regnum[r3]] = val
-        elif opcode == "00001":
-            
-
+        elif opcode == "00001":         # subf
+            val3 = float(val1) - float(val2)
+            if convertCSE112(str(val3)) == False:
+                regval[regnum[r3]] = "0000000000000000"
+                flag_dic["v"]="1"
+            else:
+                val = convertCSE112(str(val3))
+                regval[regnum[r3]] = val
+        elif opcode == "00010":     # movf
+            r1 = i[5:8]
+            regval[regnum[r1]] = "00000000" + i[8:]
 
     if opcode=="01010":#hlt
         pass
