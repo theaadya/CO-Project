@@ -11,9 +11,7 @@ for i in range(machine_code.count("")):
 machine_code_dic = {}
 for idx, val in enumerate(machine_code):
     machine_code_dic[idx] = val
-regnum={"000":"r0" , "001":"r1" , "010":"r2" , "011":"r3" , "100":"r4" , "101":"r5" , "110":"r6"}
-regval={"r0":"0000000000000000" , "r1":"0000000000000000" , "r2":"0000000000000000" , "r3":"0000000000000000" , "r4":"0000000000000000" , "r5":"0000000000000000" , "r6":"0000000000000000"}
-flag_dic={"v":"0" , "l":"0" , "g":"0" , "e":"0"}
+
 def reset_flags():
     for i in flag_dic.keys():
         flag_dic[i]="0"
@@ -185,7 +183,6 @@ def main(i):
             st1=regval[regnum[reg1]][imm:]
             st2="0"*imm
             regval[regnum[reg1]]=st1+st2
-        # else:     # mov float
 
     if opcode=="10011" or opcode=="10111" or opcode=="11101":
         #type_c
@@ -242,7 +239,6 @@ def main(i):
                 regval[regnum[r3]] = "00000000" + val
         elif opcode == "00010":     # movf
             r1 = i[5:8]
-            print("00000000" + i[8:])
             regval[regnum[r1]] = "00000000" + i[8:]
 
     if opcode=="01010": #hlt
@@ -268,7 +264,7 @@ def simulator(machine_code, flag_dic, machine_code_dic, cycle):
                 flag_dic["e"]=="1"
 
         else:
-            if opcode=="01100" or "01101" or "01111" or "11111": #jump, flag not reset
+            if opcode=="01100" or opcode == "01101" or opcode == "01111" or opcode == "11111": #jump, flag not reset
                 mem_addr=i[8:]
                 label_addr=int(mem_addr,2)
                 
@@ -313,10 +309,10 @@ def simulator(machine_code, flag_dic, machine_code_dic, cycle):
         cycle += 1
     return
 
-# regnum={"000":"r0" , "001":"r1" , "010":"r2" , "011":"r3" , "100":"r4" , "101":"r5" , "110":"r6"}
-# regval={"r0":"0000000000000000" , "r1":"0000000000000000" , "r2":"0000000000000000" , "r3":"0000000000000000" , "r4":"0000000000000000" , "r5":"0000000000000000" , "r6":"0000000000000000"}
-# flag_dic={"v":"0" , "l":"0" , "g":"0" , "e":"0"}
-# var_dic={}  # what to store? , see load n store
+regnum={"000":"r0" , "001":"r1" , "010":"r2" , "011":"r3" , "100":"r4" , "101":"r5" , "110":"r6"}
+regval={"r0":"0000000000000000" , "r1":"0000000000000000" , "r2":"0000000000000000" , "r3":"0000000000000000" , "r4":"0000000000000000" , "r5":"0000000000000000" , "r6":"0000000000000000"}
+flag_dic={"v":"0" , "l":"0" , "g":"0" , "e":"0"}
+# var_dic={}
 
 simulator(machine_code,flag_dic, machine_code_dic, cycle)
 
