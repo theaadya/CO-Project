@@ -1,7 +1,7 @@
 # final code for SIM
 import sys
 from itertools import permutations
-import matplotlib as plt
+import matplotlib.pyplot as plt
 
 s = sys.stdin.read()
 machine_code = s.split("\n")
@@ -355,4 +355,5 @@ for i in memory.values():
     sys.stdout.write(i)
     sys.stdout.write("\n")
 
-# print(x_axis, y_axis)
+plt.scatter(x_axis, y_axis, c ="blue")
+plt.show()
