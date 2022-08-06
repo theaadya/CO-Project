@@ -1,6 +1,5 @@
 # final code for SIM
 import sys
-from itertools import permutations
 # import matplotlib as plt
 
 s = sys.stdin.read()
@@ -55,7 +54,7 @@ def perform_not(a):
         return "1"
     else:
         return "0"
-
+from itertools import permutations
 def convertFloat(v):        # converts 8 bit binary to float
     exp = int(v[:3], 2)
     num = "1." + v[3:]
