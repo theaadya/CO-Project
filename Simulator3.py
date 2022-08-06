@@ -7,10 +7,12 @@ s = sys.stdin.read()
 machine_code = s.split("\n")
 for i in range(machine_code.count("")):
     machine_code.remove("")
+lstCopy = machine_code.copy()
 
 machine_code_dic = {}
 for idx, val in enumerate(machine_code):
     machine_code_dic[idx] = val
+codeCopy = machine_code_dic.copy()
 
 def reset_flags():
     for i in flag_dic.keys():
@@ -97,15 +99,17 @@ def printPCReg(pc):
     sys.stdout.write("\n")
 
 var_mem = []
-memory = []
-zero_str = "0000000000000000"
-for i in machine_code:
-    if i[:5] == "10100" or i[:5] == "10101":
-        var_mem.append("00000000"+i[8:])
-    memory.append(i)
-for i in range(len(var_mem)):
-    memory.append(var_mem[i])
-zero_nums = 256 - (len(machine_code) + len(var_mem))
+memory = {}
+zero_str = "0"*16
+for idx, val in enumerate(machine_code):
+    if val[:5] == "10100" or val[:5] == "10101":
+        var_mem.append(val[8:])
+    memory[idx] = val
+var_final = []
+[var_final.append(i) for i in var_mem if i not in var_final]
+zero_nums = 256 - len(machine_code)
+for i in range(zero_nums):
+    memory[len(memory)] = "0"*16
 
 x_axis, y_axis = [], []
 cycle = 0
@@ -206,9 +210,9 @@ def main(i):
         reg=i[5:8]
         mem_addr = i[8:]
         var_address = int(mem_addr,2)
-        if opcode=="10100":     #load instruction
+        if opcode=="10100":     # load instruction
             regval[regnum[reg]] = memory[var_address]
-        if opcode=="10101":     #store instruction
+        if opcode=="10101":     # store instruction
             memory[var_address] = regval[regnum[reg]]
         
     elif opcode=="00000" or opcode=="00001" or opcode=="00010":     #floating point operations
@@ -224,7 +228,7 @@ def main(i):
                 flag_dic["v"]="1"
             else:
                 val = list(floatNums.keys())[list(floatNums.values()).index(str(float(val3)))]
-                regval[regnum[r3]] = "00000000" + val
+                regval[regnum[r3]] = "0"*8 + val
         elif opcode == "00001":         # subf
             val3 = float(val1) - float(val2)
             if str(float(val3)) not in floatNums.values():
@@ -232,20 +236,22 @@ def main(i):
                 flag_dic["v"]="1"
             else:
                 val = list(floatNums.keys())[list(floatNums.values()).index(str(float(val3)))]
-                regval[regnum[r3]] = "00000000" + val
+                regval[regnum[r3]] = "0"*8 + val
         elif opcode == "00010":     # movf
             r1 = i[5:8]
-            regval[regnum[r1]] = "00000000" + i[8:]
+            regval[regnum[r1]] = "0"*8 + i[8:]
 
     if opcode=="01010": #hlt
         pass
     return
 
-def simulator(machine_code, machine_code_dic, cycle):
+def simulator(machine_code, machine_dic, cycle):
     for i in machine_code:
+        global codeCopy
+        global lstCopy
         opcode=i[:5]
-        pc = list(machine_code_dic.keys())[list(machine_code_dic.values()).index(i)]
-        del machine_code_dic[pc]
+        pc = list(machine_dic.keys())[list(machine_dic.values()).index(i)]
+        del machine_dic[pc]
         if opcode=="11110":     # cmp instruction, all flags reset and then set
             reset_flags()
             reg1=i[10:13]
@@ -265,37 +271,59 @@ def simulator(machine_code, machine_code_dic, cycle):
                 label_addr=int(mem_addr,2)
                 
                 if opcode=="01100" and flag_dic["l"]=="1": #less than
+                    reset_flags()
                     printPCReg(pc)
                     x_axis.append(cycle)
                     y_axis.append(pc)
                     cycle += 1
-                    new_machine_code=machine_code[label_addr:]
-                    simulator(new_machine_code, machine_code_dic, cycle)
+                    machine_lst = lstCopy
+                    lstCopy = lstCopy.copy()
+                    new_machine_code = machine_lst[label_addr:]
+                    machine_dic = codeCopy
+                    codeCopy = codeCopy.copy()
+                    simulator(new_machine_code, machine_dic, cycle)
                     break
                 if opcode=="01101" and flag_dic["g"]=="1": #greater than
+                    reset_flags()
                     printPCReg(pc)
                     x_axis.append(cycle)
                     y_axis.append(pc)
                     cycle += 1
-                    new_machine_code=machine_code[label_addr:]
-                    simulator(new_machine_code, machine_code_dic, cycle)
+                    machine_lst = lstCopy
+                    lstCopy = lstCopy.copy()
+                    new_machine_code = machine_lst[label_addr:]
+                    machine_dic = codeCopy
+                    codeCopy = codeCopy.copy()
+                    simulator(new_machine_code, machine_dic, cycle)
                     break
                 if opcode=="01111" and flag_dic["e"]=="1": # equal to
+                    reset_flags()
                     printPCReg(pc)
                     x_axis.append(cycle)
                     y_axis.append(pc)
                     cycle += 1
-                    new_machine_code=machine_code[label_addr:]
-                    simulator(new_machine_code, machine_code_dic, cycle)
+                    machine_lst = lstCopy
+                    lstCopy = lstCopy.copy()
+                    new_machine_code = machine_lst[label_addr:]
+                    machine_dic = codeCopy
+                    codeCopy = codeCopy.copy()
+                    simulator(new_machine_code, machine_dic, cycle)
                     break
                 if opcode=="11111": # uncondtional jump
+                    reset_flags()
                     printPCReg(pc)
                     x_axis.append(cycle)
                     y_axis.append(pc)
                     cycle += 1
-                    new_machine_code=machine_code[label_addr:]
-                    simulator(new_machine_code, machine_code_dic, cycle)
+                    machine_lst = lstCopy
+                    lstCopy = lstCopy.copy()
+                    new_machine_code = machine_lst[label_addr:]
+                    machine_dic = codeCopy
+                    codeCopy = codeCopy.copy()
+                    simulator(new_machine_code, machine_dic, cycle)
                     break
+                else:
+                    reset_flags()
             else: # any other instruction, flags reset
                 main(i)
                 reset_flags()
@@ -313,14 +341,8 @@ flag_dic={"v":"0" , "l":"0" , "g":"0" , "e":"0"}
 simulator(machine_code, machine_code_dic, cycle)
 
 # code for printing memory
-for i in machine_code:
+for i in memory.values():
     sys.stdout.write(i)
-    sys.stdout.write("\n")
-for i in range(len(var_mem)):
-    sys.stdout.write(var_mem[i])
-    sys.stdout.write("\n")
-for i in range(zero_nums):
-    sys.stdout.write(zero_str)
     sys.stdout.write("\n")
 
 # print(x_axis, y_axis)
