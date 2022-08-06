@@ -1,5 +1,7 @@
 # final code for SIM
 import sys
+from itertools import permutations
+# import matplotlib as plt
 
 s = sys.stdin.read()
 machine_code = s.split("\n")
@@ -75,41 +77,17 @@ def convertFloat(v):        # converts 8 bit binary to float
     float_num = num.split('.')
     return int(float_num[0], 2) + int(float_num[1], 2) / 2.**len(float_num[1])
 
-def convertCSE112(val):
-    if 1 < float(val) < 128:
-        dot = val.index(".")
-        int_num = bin(int(val[:dot])).replace("0b", "")
-        frac_num = val[dot:]
-        frac_bin = "."
-        precision = 6 - len(str(int_num))
-        while precision:
-            frac_num = float(frac_num)
-            frac_num *= 2
-            bit = (frac_num)//1
-            if (bit == 1):
-                frac_num -= bit
-                frac_bin += "1"
-            else:
-                frac_bin += "0"
-            precision -= 1
-        mantissa = str(int_num) + str(frac_bin)
-        exp = 0
-        m_list = list(mantissa)
-        while m_list.index(".") != 1:
-            dot = m_list.index(".")
-            digit = m_list[dot - 1]
-            m_list[dot] = digit
-            m_list[dot - 1] = "."
-            exp += 1
-        num = "".join(m_list)
-        exp = format(exp, "#05b").replace("0b", "")
-        man = num[2:]
-        if val == str(convertFloat(exp + man)):
-            return exp + man
-        else:
-            return False
-    else:
-        return False
+floatNums = {}
+bitList = ["11111111", "11111110", "11111100", "11111000", "11110000", "11100000", "11000000", "10000000", "00000000"]
+for i in bitList:
+    nums = list(i)
+    perm = list(permutations(nums))
+    permFinal = []
+    [permFinal.append(i) for i in perm if i not in permFinal]
+    for i in permFinal:
+        binary = "".join(i)
+        flt = convertFloat(binary)
+        floatNums[("".join(i))] = str(flt)
 
 def printPCReg(pc):
     pcFormat = format(int(pc), "#010b").replace("0b", "") 
@@ -135,11 +113,7 @@ for i in range(len(var_mem)):
 zero_nums = 256 - (len(machine_code) + len(var_mem))
 
 x_axis, y_axis = [], []
-for i in range(len(memory)):
-    if memory[i] != "0101000000000000":
-        x_axis.append(i+1)
-    else:
-        break
+cycle = 0
 
 def main(i):
     opcode=i[:5]
@@ -250,29 +224,29 @@ def main(i):
         val2 = convertFloat(regval[regnum[r2]][8:])
         if opcode == "00000":       # addf
             val3 = float(val1) + float(val2)
-            if convertCSE112(str(val3)) == False:
+            if str(val3) not in floatNums.values():
                 regval[regnum[r3]] = "0000000000000000"
                 flag_dic["v"]="1"
             else:
-                val = convertCSE112(str(val3))
+                val = list(floatNums.keys())[list(floatNums.values()).index(str(val3))]
                 regval[regnum[r3]] = val
         elif opcode == "00001":         # subf
             val3 = float(val1) - float(val2)
-            if convertCSE112(str(val3)) == False:
+            if str(val3) not in floatNums.values():
                 regval[regnum[r3]] = "0000000000000000"
                 flag_dic["v"]="1"
             else:
-                val = convertCSE112(str(val3))
+                val = list(floatNums.keys())[list(floatNums.values()).index(str(val3))]
                 regval[regnum[r3]] = val
         elif opcode == "00010":     # movf
             r1 = i[5:8]
             regval[regnum[r1]] = "00000000" + i[8:]
 
-    if opcode=="01010":#hlt
+    if opcode=="01010": #hlt
         pass
     return
 
-def simulator(machine_code,regval,flag_dic, machine_code_dic):
+def simulator(machine_code,regval,flag_dic, machine_code_dic, cycle):
     for i in machine_code:
         opcode=i[:5]
         pc = list(machine_code_dic.keys())[list(machine_code_dic.values()).index(i)]
@@ -297,28 +271,43 @@ def simulator(machine_code,regval,flag_dic, machine_code_dic):
                 
                 if opcode=="01100" and flag_dic["l"]==1: #less than
                     printPCReg(pc)
+                    x_axis.append(cycle)
+                    y_axis.append(pc)
+                    cycle += 1
                     new_machine_code=machine_code[label_addr:]
-                    simulator(new_machine_code,regval,flag_dic, machine_code_dic)
+                    simulator(new_machine_code,regval,flag_dic, machine_code_dic, cycle)
                     break
                 if opcode=="01101" and flag_dic["g"]==1: #greater than
                     printPCReg(pc)
+                    x_axis.append(cycle)
+                    y_axis.append(pc)
+                    cycle += 1
                     new_machine_code=machine_code[label_addr:]
-                    simulator(new_machine_code,regval,flag_dic, machine_code_dic)
+                    simulator(new_machine_code,regval,flag_dic, machine_code_dic, cycle)
                     break
                 if opcode=="01111" and flag_dic["e"]==1: # equal to
                     printPCReg(pc)
+                    x_axis.append(cycle)
+                    y_axis.append(pc)
+                    cycle += 1
                     new_machine_code=machine_code[label_addr:]
-                    simulator(new_machine_code,regval,flag_dic, machine_code_dic)
+                    simulator(new_machine_code,regval,flag_dic, machine_code_dic, cycle)
                     break
                 if opcode=="11111": # uncondtional jump
                     printPCReg(pc)
+                    x_axis.append(cycle)
+                    y_axis.append(pc)
+                    cycle += 1
                     new_machine_code=machine_code[label_addr:]
-                    simulator(new_machine_code,regval,flag_dic, machine_code_dic)
+                    simulator(new_machine_code,regval,flag_dic, machine_code_dic, cycle)
                     break
             else: #any other instruction, flags reset
                 main(i)
                 reset_flags()
         printPCReg(pc)
+        x_axis.append(cycle)
+        y_axis.append(pc)
+        cycle += 1
     return
 
 regnum={"000":"r0" , "001":"r1" , "010":"r2" , "011":"r3" , "100":"r4" , "101":"r5" , "110":"r6"}
@@ -326,7 +315,7 @@ regval={"r0":"0000000000000000" , "r1":"0000000000000000" , "r2":"00000000000000
 flag_dic={"v":"0" , "l":"0" , "g":"0" , "e":"0"}
 # var_dic={}  # what to store? , see load n store
 
-simulator(machine_code,regval,flag_dic, machine_code_dic)
+simulator(machine_code,regval,flag_dic, machine_code_dic, cycle)
 
 # code for printing memory
 for i in machine_code:
@@ -338,3 +327,15 @@ for i in range(len(var_mem)):
 for i in range(zero_nums):
     sys.stdout.write(zero_str)
     sys.stdout.write("\n")
+
+print(x_axis, y_axis)
+# trial machine_code
+# 1000000100101110
+# 1000100100101110
+# 1111000000110000
+# 1000000100101110
+# 1111100000000111
+# 1000000100101110
+# 1000100100101110
+# 1000000100101110
+# 0101000000000000
