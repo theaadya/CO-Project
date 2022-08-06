@@ -1,13 +1,15 @@
 import sys
+from itertools import permutations
+
 PC_var = 0
 PC_label = 0
-type_a = {"add": "10000", "sub": "10001", "mul": "10110", "xor": "11010", "or": "11011", "and": "11100"}
+type_a = {"add": "10000", "sub": "10001", "mul": "10110", "xor": "11010", "or": "11011", "and": "11100", "addf": "00000", "subf": "00001"}
 type_b = {"ls":"11001", "rs":"11000", "mov":"10010"} #mov r1 imm
 type_c = {"div": "10111", "not": "11101", "cmp": "11110", "mov": "10011"} # mov r1 r2
 type_d = {"st": "10101", "ld": "10100"}
 type_e = {"jmp": "11111", "jlt": "01100", "je": "01111", "jgt": "01101"}
-reg = {"r0": "000", "r1": "001", "r2": "010", "r3": "011", "r4": "100", "r5": "101", "r6": "110", "r7": "111"}
-opcode = {"add": "10000", "sub": "10001", "mul": "10110", "xor": "11010", "or": "11011", "and": "11100", "ls":"11001", "rs":"11000", "mov":"10010","div": "10111", "not": "11101", "cmp": "11110", "mov": "10011","st": "10100", "ld": "10101","jmp": "11111", "jlt": "01100", "je": "01111", "jgt": "01101"}
+reg = {"r0": "000", "r1": "001", "r2": "010", "r3": "011", "r4": "100", "r5": "101", "r6": "110"}
+opcode = {"add": "10000", "sub": "10001", "mul": "10110", "xor": "11010", "or": "11011", "and": "11100", "ls":"11001", "rs":"11000", "mov":"10010","div": "10111", "not": "11101", "cmp": "11110", "mov": "10011","st": "10100", "ld": "10101","jmp": "11111", "jlt": "01100", "je": "01111", "jgt": "01101", "hlt": "01010"}
 lab_dic = {} 
 vars = {}
 vars_line = {}
@@ -21,6 +23,7 @@ flag_d = True
 flag_e = True
 flag_m=True
 flag_h=True
+flag_f = True
 
 def check_bin(check_str):   
     flag = True
@@ -66,6 +69,38 @@ def DecBin(string):
         Anslst=[str(i) for i in Bnumlst]
         Binary_Number="".join(Anslst)
         return(Binary_Number)
+
+def convertFloat(v):        # converts 8 bit binary to float
+    exp = int(v[:3], 2)
+    num = "1." + v[3:]
+    numList = list(num)
+    zero = exp - 4
+    while zero > 0:
+        numList.append("0")
+        zero -= 1
+    while exp > 0:
+        dot = numList.index(".")
+        digit = numList[dot + 1]
+        numList[dot] = digit
+        numList[dot + 1] = "."
+        exp -= 1
+    num = "".join(numList)
+    float_num = num.split('.')
+    return int(float_num[0], 2) + int(float_num[1], 2) / 2.**len(float_num[1])
+
+floatNums = {}
+bitList = ["11111111", "11111110", "11111100", "11111000", "11110000", "11100000", "11000000", "10000000", "00000000"]
+for i in bitList:
+    nums = list(i)
+    perm = list(permutations(nums))
+    permFinal = []
+    [permFinal.append(i) for i in perm if i not in permFinal]
+    for i in permFinal:
+        binary = "".join(i)
+        flt = convertFloat(binary)
+        floatNums[("".join(i))] = str(flt)
+
+
 
 s = sys.stdin.read()
 line = s.split("\n")
@@ -139,6 +174,28 @@ if flag == True:
             else:
                 print(f'Error in line {i+1}: Wrong Instruction syntax for {inst_lst[i][0].lower()}')
                 flag_a = False
+                break
+
+        if inst_lst2[i][0].lower() == "movf":
+            flag_f = True
+            if len(inst_lst2[i]) == 3 or inst_lst2[i][2][0] == "$":
+                if inst_lst2[i][1].lower() in reg:
+                    if inst_lst2[i][2][1:] in floatNums.values():
+                        val = list(floatNums.keys())[list(floatNums.values()).index(str(inst_lst2[i][2][1:]))]
+                        op = "00010"
+                        r1 = reg[inst_lst2[i][1].lower()]
+                        machine_code.append(op + r1 + val)
+                    else:
+                        print(f'Error in line {i+1}: Number can not be represented in our system')
+                        flag_f = False
+                        break
+                else:
+                    print(f'Error in line {i+1}: Undefined Register name')
+                    flag_f = False
+                    break
+            else:
+                print(f'Error in line {i+1}: Wrong Instruction syntax for {inst_lst[i][0].lower()}')
+                flag_f = False
                 break
                     
         elif inst_lst2[i][0].lower() in type_b and inst_lst2[i][2][0]=="$":
