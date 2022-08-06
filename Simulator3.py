@@ -1,6 +1,7 @@
 # final code for SIM
 import sys
-# import matplotlib as plt
+from itertools import permutations
+import matplotlib as plt
 
 s = sys.stdin.read()
 machine_code = s.split("\n")
@@ -54,7 +55,7 @@ def perform_not(a):
         return "1"
     else:
         return "0"
-from itertools import permutations
+
 def convertFloat(v):        # converts 8 bit binary to float
     exp = int(v[:3], 2)
     num = "1." + v[3:]
@@ -225,7 +226,10 @@ def main(i):
             val1 = convertFloat(regval[regnum[r1]][8:])
             val2 = convertFloat(regval[regnum[r2]][8:])
             val3 = float(val1) + float(val2)
-            if str(float(val3)) not in floatNums.values():
+            if val3 > 252:
+                regval[regnum[r3]] = "0"*8 + "1"*8
+                flag_dic["v"]="1"
+            elif str(float(val3)) not in floatNums.values():
                 regval[regnum[r3]] = "0"*16
                 flag_dic["v"]="1"
             else:
