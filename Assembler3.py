@@ -1,3 +1,6 @@
+#Assembler
+
+import sys
 import sys
 from itertools import permutations
 
@@ -206,7 +209,7 @@ if flag == True:
             if int(inst_lst2[i][1][1])<0 or int(inst_lst2[i][1][1])>6:
                 flag_b=False
                 print(f'Error in line {i+1}: Undefined Register name')
-            if inst_lst2[i][2].lower()=="flag":
+            if inst_lst2[i][2].lower()=="flags":
                 flag_b=False
                 print(f'Error in line {i+1}: Illegal use of flags register')
             Imm=inst_lst2[i][2][1:]
