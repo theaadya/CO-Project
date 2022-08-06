@@ -11,7 +11,9 @@ for i in range(machine_code.count("")):
 machine_code_dic = {}
 for idx, val in enumerate(machine_code):
     machine_code_dic[idx] = val
-
+regnum={"000":"r0" , "001":"r1" , "010":"r2" , "011":"r3" , "100":"r4" , "101":"r5" , "110":"r6"}
+regval={"r0":"0000000000000000" , "r1":"0000000000000000" , "r2":"0000000000000000" , "r3":"0000000000000000" , "r4":"0000000000000000" , "r5":"0000000000000000" , "r6":"0000000000000000"}
+flag_dic={"v":"0" , "l":"0" , "g":"0" , "e":"0"}
 def reset_flags():
     for i in flag_dic.keys():
         flag_dic[i]="0"
