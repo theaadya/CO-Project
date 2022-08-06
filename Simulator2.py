@@ -76,7 +76,7 @@ def convertFloat(v):        # converts 8 bit binary to float
     return int(float_num[0], 2) + int(float_num[1], 2) / 2.**len(float_num[1])
 
 def convertCSE112(val):
-    if 1 < val < 128:
+    if 1 < float(val) < 128:
         dot = val.index(".")
         int_num = bin(int(val[:dot])).replace("0b", "")
         frac_num = val[dot:]
@@ -102,12 +102,26 @@ def convertCSE112(val):
             m_list[dot - 1] = "."
             exp += 1
         num = "".join(m_list)
-        if num == convertFloat(num):
-            return num
+        exp = format(exp, "#05b").replace("0b", "")
+        man = num[2:]
+        if val == str(convertFloat(exp + man)):
+            return exp + man
         else:
             return False
     else:
         return False
+
+def printPCReg(pc):
+    pcFormat = format(int(pc), "#010b").replace("0b", "") 
+    sys.stdout.write(pcFormat)
+    sys.stdout.write(" ")
+    for i in regval:
+        sys.stdout.write(regval[i])
+        sys.stdout.write(" ")
+    sys.stdout.write("000000000000")
+    for i in flag_dic:
+        sys.stdout.write(flag_dic[i])
+    sys.stdout.write("\n")
 
 var_mem = []
 memory = []
@@ -127,7 +141,7 @@ for i in range(len(memory)):
     else:
         break
 
-def main(i,var_dic):
+def main(i):
     opcode=i[:5]
     if opcode=="10000" or opcode=="10001" or opcode=="10110" or opcode=="11010" or opcode=="11011" or opcode=="11100":
         #type_a
@@ -282,31 +296,29 @@ def simulator(machine_code,regval,flag_dic, machine_code_dic):
                 label_addr=int(mem_addr,2)
                 
                 if opcode=="01100" and flag_dic["l"]==1: #less than
-                    print(format(int(pc), "#010b").replace("0b", ""))
+                    printPCReg(pc)
                     new_machine_code=machine_code[label_addr:]
                     simulator(new_machine_code,regval,flag_dic, machine_code_dic)
                     break
                 if opcode=="01101" and flag_dic["g"]==1: #greater than
-                    print(format(int(pc), "#010b").replace("0b", ""))
+                    printPCReg(pc)
                     new_machine_code=machine_code[label_addr:]
                     simulator(new_machine_code,regval,flag_dic, machine_code_dic)
                     break
                 if opcode=="01111" and flag_dic["e"]==1: # equal to
-                    print(format(int(pc), "#010b").replace("0b", ""))
+                    printPCReg(pc)
                     new_machine_code=machine_code[label_addr:]
                     simulator(new_machine_code,regval,flag_dic, machine_code_dic)
                     break
                 if opcode=="11111": # uncondtional jump
-                    print(format(int(pc), "#010b").replace("0b", ""))
+                    printPCReg(pc)
                     new_machine_code=machine_code[label_addr:]
                     simulator(new_machine_code,regval,flag_dic, machine_code_dic)
                     break
             else: #any other instruction, flags reset
-                main(i,var_mem)
+                main(i)
                 reset_flags()
-        print(format(int(pc), "#010b").replace("0b", ""))
-        # print(regval)
-        # print(flag_dic)
+        printPCReg(pc)
     return
 
 regnum={"000":"r0" , "001":"r1" , "010":"r2" , "011":"r3" , "100":"r4" , "101":"r5" , "110":"r6"}
@@ -318,19 +330,11 @@ simulator(machine_code,regval,flag_dic, machine_code_dic)
 
 # code for printing memory
 for i in machine_code:
-    print(i, end = "\n")
+    sys.stdout.write(i)
+    sys.stdout.write("\n")
 for i in range(len(var_mem)):
-    print(var_mem[i], end = "\n")
+    sys.stdout.write(var_mem[i])
+    sys.stdout.write("\n")
 for i in range(zero_nums):
-    print(zero_str, end = "\n")
-
-# trial machine_code
-# 1000000100101110
-# 1000100100101110
-# 1111000000110000
-# 1000000100101110
-# 1111100000000111
-# 1000000100101110
-# 1000100100101110
-# 1000000100101110
-# 0101000000000000
+    sys.stdout.write(zero_str)
+    sys.stdout.write("\n")
