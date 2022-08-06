@@ -115,6 +115,7 @@ x_axis, y_axis = [], []
 cycle = 0
 
 def main(i):
+    reset_flags()
     opcode=i[:5]
     if opcode=="10000" or opcode=="10001" or opcode=="10110" or opcode=="11010" or opcode=="11011" or opcode=="11100":
         #type_a
@@ -124,7 +125,11 @@ def main(i):
         if opcode=="10000":     #add
             val3 = ((bintodec(int(regval[regnum[reg1]])) + bintodec(int(regval[regnum[reg2]]))))
             val3 = str(dectobin(val3))
-            regval[regnum[reg3]]=("0"*(16-len(val3)))+val3
+            if int(val3, 2) > (2**(16)):
+                regval[regnum[reg3]] = "1"*16
+                flag_dic["v"]="1"
+            else:
+                regval[regnum[reg3]]=("0"*(16-len(val3)))+val3
         elif opcode=="10001":   #sub
             val1=bintodec(int(regval[regnum[reg1]]))
             val2=bintodec(int(regval[regnum[reg2]]))
@@ -138,13 +143,11 @@ def main(i):
             val1=bintodec(int(regval[regnum[reg1]]))
             val2=bintodec(int(regval[regnum[reg2]]))
             val3=str(dectobin(val1*val2))
-            diff=16-len(val3)
-            if diff<0:
+            if int(val3, 2) > (2**16):
                 flag_dic["v"]="1"
-                val3=val3[(len(val3)-16):]
-                regval[regnum[reg3]]=val3
+                regval[regnum[reg3]] = "1"*16
             else:
-                regval[regnum[reg3]]=("0"*diff)+val3
+                regval[regnum[reg3]] = ("0"*(16-len(val3)))+val3
         elif opcode=="11010":   #bitwise xor
             val1=regval[regnum[reg1]]
             val2=regval[regnum[reg2]]
@@ -216,12 +219,12 @@ def main(i):
             memory[var_address] = regval[regnum[reg]]
         
     elif opcode=="00000" or opcode=="00001" or opcode=="00010":     #floating point operations
-        r1 = i[7:10]
-        r2 = i[10:13]
-        r3 = i[13:16]
-        val1 = convertFloat(regval[regnum[r1]][8:])
-        val2 = convertFloat(regval[regnum[r2]][8:])
         if opcode == "00000":       # addf
+            r1 = i[7:10]
+            r2 = i[10:13]
+            r3 = i[13:16]
+            val1 = convertFloat(regval[regnum[r1]][8:])
+            val2 = convertFloat(regval[regnum[r2]][8:])
             val3 = float(val1) + float(val2)
             if str(float(val3)) not in floatNums.values():
                 regval[regnum[r3]] = "0"*16
@@ -230,10 +233,15 @@ def main(i):
                 val = list(floatNums.keys())[list(floatNums.values()).index(str(float(val3)))]
                 regval[regnum[r3]] = "0"*8 + val
         elif opcode == "00001":         # subf
+            r1 = i[7:10]
+            r2 = i[10:13]
+            r3 = i[13:16]
+            val1 = convertFloat(regval[regnum[r1]][8:])
+            val2 = convertFloat(regval[regnum[r2]][8:])
             val3 = float(val1) - float(val2)
             if str(float(val3)) not in floatNums.values():
                 regval[regnum[r3]] = "0"*16
-                flag_dic["v"]="1"
+                flag_dic["v"] = "1"
             else:
                 val = list(floatNums.keys())[list(floatNums.values()).index(str(float(val3)))]
                 regval[regnum[r3]] = "0"*8 + val
@@ -326,7 +334,6 @@ def simulator(machine_code, machine_dic, cycle):
                     reset_flags()
             else: # any other instruction, flags reset
                 main(i)
-                reset_flags()
         printPCReg(pc)
         x_axis.append(cycle)
         y_axis.append(pc)
