@@ -247,7 +247,7 @@ def main(i):
         pass
     return
 
-def simulator(machine_code,regval,flag_dic, machine_code_dic, cycle):
+def simulator(machine_code, flag_dic, machine_code_dic, cycle):
     for i in machine_code:
         opcode=i[:5]
         pc = list(machine_code_dic.keys())[list(machine_code_dic.values()).index(i)]
@@ -276,7 +276,7 @@ def simulator(machine_code,regval,flag_dic, machine_code_dic, cycle):
                     y_axis.append(pc)
                     cycle += 1
                     new_machine_code=machine_code[label_addr:]
-                    simulator(new_machine_code,regval,flag_dic, machine_code_dic, cycle)
+                    simulator(new_machine_code,flag_dic, machine_code_dic, cycle)
                     break
                 if opcode=="01101" and flag_dic["g"]==1: #greater than
                     printPCReg(pc)
@@ -284,7 +284,7 @@ def simulator(machine_code,regval,flag_dic, machine_code_dic, cycle):
                     y_axis.append(pc)
                     cycle += 1
                     new_machine_code=machine_code[label_addr:]
-                    simulator(new_machine_code,regval,flag_dic, machine_code_dic, cycle)
+                    simulator(new_machine_code,flag_dic, machine_code_dic, cycle)
                     break
                 if opcode=="01111" and flag_dic["e"]==1: # equal to
                     printPCReg(pc)
@@ -292,7 +292,7 @@ def simulator(machine_code,regval,flag_dic, machine_code_dic, cycle):
                     y_axis.append(pc)
                     cycle += 1
                     new_machine_code=machine_code[label_addr:]
-                    simulator(new_machine_code,regval,flag_dic, machine_code_dic, cycle)
+                    simulator(new_machine_code,flag_dic, machine_code_dic, cycle)
                     break
                 if opcode=="11111": # uncondtional jump
                     printPCReg(pc)
@@ -300,7 +300,7 @@ def simulator(machine_code,regval,flag_dic, machine_code_dic, cycle):
                     y_axis.append(pc)
                     cycle += 1
                     new_machine_code=machine_code[label_addr:]
-                    simulator(new_machine_code,regval,flag_dic, machine_code_dic, cycle)
+                    simulator(new_machine_code,flag_dic, machine_code_dic, cycle)
                     break
             else: # any other instruction, flags reset
                 main(i)
@@ -316,7 +316,7 @@ regval={"r0":"0000000000000000" , "r1":"0000000000000000" , "r2":"00000000000000
 flag_dic={"v":"0" , "l":"0" , "g":"0" , "e":"0"}
 # var_dic={}  # what to store? , see load n store
 
-simulator(machine_code,regval,flag_dic, machine_code_dic, cycle)
+simulator(machine_code,flag_dic, machine_code_dic, cycle)
 
 # code for printing memory
 for i in machine_code:
