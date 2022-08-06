@@ -1,74 +1,63 @@
+# final code for SIM
 import sys
 from itertools import permutations
+# import matplotlib as plt
 
-PC_var = 0
-PC_label = 0
-type_a = {"add": "10000", "sub": "10001", "mul": "10110", "xor": "11010", "or": "11011", "and": "11100", "addf": "00000", "subf": "00001"}
-type_b = {"ls":"11001", "rs":"11000", "mov":"10010"} #mov r1 imm
-type_c = {"div": "10111", "not": "11101", "cmp": "11110", "mov": "10011"} # mov r1 r2
-type_d = {"st": "10101", "ld": "10100"}
-type_e = {"jmp": "11111", "jlt": "01100", "je": "01111", "jgt": "01101"}
-reg = {"r0": "000", "r1": "001", "r2": "010", "r3": "011", "r4": "100", "r5": "101", "r6": "110"}
-opcode = {"add": "10000", "sub": "10001", "mul": "10110", "xor": "11010", "or": "11011", "and": "11100", "ls":"11001", "rs":"11000", "mov":"10010","div": "10111", "not": "11101", "cmp": "11110", "mov": "10011","st": "10100", "ld": "10101","jmp": "11111", "jlt": "01100", "je": "01111", "jgt": "01101", "hlt": "01010"}
-lab_dic = {} 
-vars = {}
-vars_line = {}
-machine_code = []
-vars_count = 0 
-flag = True
-flag_a = True
-flag_b=True
-flag_c=True
-flag_d = True
-flag_e = True
-flag_m=True
-flag_h=True
-flag_f = True
+s = sys.stdin.read()
+machine_code = s.split("\n")
+for i in range(machine_code.count("")):
+    machine_code.remove("")
 
-def check_bin(check_str):   
-    flag = True
-    for i in range(len(check_str)):
-        if check_str[i] not in "01":
-            flag = False
-            break
-    return flag
+machine_code_dic = {}
+for idx, val in enumerate(machine_code):
+    machine_code_dic[idx] = val
 
+def reset_flags():
+    for i in flag_dic.keys():
+        flag_dic[i]="0"
 
-def convert(PC_var):
-    b = bin(PC_var)
-    mem = str(b).replace("0b", "")
-    mem = format(int(mem), '#08')
-    return str(mem)
+def bintodec(n):
+    num=0
+    n=str(n)
+    pow=0
+    for i in n[::-1]:
+        b=int(i)
+        num+=((2**(pow))*b)
+        pow+=1
+    return num
 
+def dectobin(n):
+    num=n
+    val=""
+    while num>0:
+        val+=str(num%2)
+        num=num//2
+    val=val[::-1]
+    return int(val)
 
-def DecBin(string):
-    if string.isdigit():
-        lst=[int(i) for i in string]
-        for i in lst:
-            if i>=0 and i<=9:
-                Flag=True
-            else:
-                Flag=False
-                break
+def perform_xor(a,b):
+    if a==b:
+        return "0"
     else:
-        Flag=False
-  
-    if Flag:   
-        num=int(string)
-        Bnumlst=[]
-        q=1
-        while q!=0:
-            q=num//2
-            Bnum=num%2
-            Bnumlst.append(Bnum)
-            num=q
-        zeroes=8-len(Bnumlst)
-        for i in range(zeroes):
-            Bnumlst.append(0)
-        Bnumlst.reverse()
-        Anslst=[str(i) for i in Bnumlst]
-        Binary_Number="".join(Anslst)
-        return(Binary_Number)
+        return "1"
+
+def perform_or(a,b):
+    if a=="1" or b=="1":
+        return "1"
+    else:
+        return "0"
+
+def perform_and(a,b):
+    if a=="0" or b=="0":
+        return "0"
+    else:
+        return "1"
+
+def perform_not(a):
+    if a=="0":
+        return "1"
+    else:
+        return "0"
 
 def convertFloat(v):        # converts 8 bit binary to float
     exp = int(v[:3], 2)
@@ -100,226 +89,244 @@ for i in bitList:
         flt = convertFloat(binary)
         floatNums[("".join(i))] = str(flt)
 
+def printPCReg(pc):
+    pcFormat = format(int(pc), "#010b").replace("0b", "") 
+    sys.stdout.write(pcFormat)
+    sys.stdout.write(" ")
+    for i in regval:
+        sys.stdout.write(regval[i])
+        sys.stdout.write(" ")
+    sys.stdout.write("0" * 12)
+    for i in flag_dic:
+        sys.stdout.write(flag_dic[i])
+    sys.stdout.write("\n")
 
+var_mem = []
+memory = []
+zero_str = "0000000000000000"
+for i in machine_code:
+    if i[:5] == "10100" or i[:5] == "10101":
+        var_mem.append("00000000"+i[8:])
+    memory.append(i)
+for i in range(len(var_mem)):
+    memory.append(var_mem[i])
+zero_nums = 256 - (len(machine_code) + len(var_mem))
 
-s = sys.stdin.read()
-line = s.split("\n")
-line_copy = line
-inst_lst = []
-for i in line:
-    ele = i.split()
-    inst_lst.append(ele)
+x_axis, y_axis = [], []
+cycle = 0
 
-c = line.count("")
-for i in range(c):
-    line.remove("")
-inst_lst2 = []
-for i in line:
-    ele = i.split()
-    inst_lst2.append(ele)
-
-for i in range(len(inst_lst2)):
-    if inst_lst2[i][0] == "var":
-        vars_count += 1
-
-PC_var = len(inst_lst2) - vars_count
-    
-for i in range(len(inst_lst2)):
-    if inst_lst2[i][0] == "var":
-        continue
-    else:
-        if inst_lst2[i][0][-1] == ":" and len(inst_lst2[i]) > 1 and inst_lst2[i][1] in opcode:
-            lab_dic[inst_lst2[i][0][:-1].lower()] = DecBin(str(PC_label))
-        PC_label += 1
-
-for i in range(len(inst_lst2)):
-    if inst_lst2[i][0] == "var":
-        if len(inst_lst2[i]) == 2:
-            if inst_lst2[i][1] not in opcode and inst_lst2[i][1] not in lab_dic and inst_lst2[i][1] not in reg:
-                vars[inst_lst2[i][1].lower()] = convert(PC_var)
-                PC_var += 1
-                vars_line[inst_lst2[i][1].lower()] = i + 1
+def main(i):
+    opcode=i[:5]
+    if opcode=="10000" or opcode=="10001" or opcode=="10110" or opcode=="11010" or opcode=="11011" or opcode=="11100":
+        #type_a
+        reg1=i[7:10]
+        reg2=i[10:13]
+        reg3=i[13:16]
+        if opcode=="10000":     #add
+            val3=str(dectobin(bintodec(int(regval[regnum[reg1]])) + bintodec(int(regval[regnum[reg2]]))))
+            regval[regnum[reg3]]=("0"*(16-len(val3)))+val3
+        elif opcode=="10001":   #sub
+            val1=bintodec(int(regval[regnum[reg1]]))
+            val2=bintodec(int(regval[regnum[reg2]]))
+            if val2>val1:
+                regval[regnum[reg3]]="0000000000000000"
+                flag_dic["v"]="1"
             else:
-                print(f'Error in line {i+1}: Not a valid variable')
-                flag = False
-                break
-        else:
-            print(f'Error in line {i+1}: Not a valid variable syntax')
-            flag = False
-            break
-    else:
-        continue
-
-if flag == True:
-    for i in range(len(inst_lst2)):
+                val3=str(dectobin(val1-val2))
+                regval[regnum[reg3]]=("0"*(16-len(val3)))+val3
+        elif opcode=="10110":   #multiply
+            val1=bintodec(int(regval[regnum[reg1]]))
+            val2=bintodec(int(regval[regnum[reg2]]))
+            val3=str(dectobin(val1*val2))
+            diff=16-len(val3)
+            if diff<0:
+                flag_dic["v"]="1"
+                val3=val3[(len(val3)-16):]
+                regval[regnum[reg3]]=val3
+            else:
+                regval[regnum[reg3]]=("0"*diff)+val3
+        elif opcode=="11010":   #bitwise xor
+            val1=regval[regnum[reg1]]
+            val2=regval[regnum[reg2]]
+            val3=""
+            for i in range(16):
+                val3+=perform_xor(val1[i],val2[i])
+            regval[regnum[reg3]]=val3
+        elif opcode=="11011":   #bitwise or
+            val1=regval[regnum[reg1]]
+            val2=regval[regnum[reg2]]
+            val3=""
+            for i in range(16):
+                val3+=perform_or(val1[i],val2[i])
+            regval[regnum[reg3]]=val3
+        else:   #bitwise and
+            val1=regval[regnum[reg1]]
+            val2=regval[regnum[reg2]]
+            val3=""
+            for i in range(16):
+                val3+=perform_and(val1[i],val2[i])
+            regval[regnum[reg3]]=val3
         
-        if inst_lst2[i][0][-1]==":":
-            label=inst_lst2[i][0]
-            inst_lst2[i].pop(0)
-            flag_l=True
+    if opcode=="10010" or opcode=="11000" or opcode=="11001":
+        #type_b
+        reg1=i[5:8]
+        imm=i[8:]
+        if opcode=="10010": #mov imm
+            regval[regnum[reg1]]=("0"*8)+imm
+        elif opcode=="11000":   #right shift
+            imm=bintodec(int(imm))
+            st1="0"*imm
+            st2=(regval[regnum[reg1]][:(-imm)])
+            regval[regnum[reg1]]=st1+st2
+        elif opcode=="11001":   #left shift
+            imm=bintodec(int(imm))
+            st1=regval[regnum[reg1]][imm:]
+            st2="0"*imm
+            regval[regnum[reg1]]=st1+st2
+        # else:     # mov float
 
-        if inst_lst2[i][0].lower() in type_a:
-            flag_a = True
-            if len(inst_lst2[i]) == 4:
-                if inst_lst2[i][1].lower() in reg and inst_lst2[i][2].lower() in reg and inst_lst2[i][3].lower() in reg:
-                    op = type_a[inst_lst2[i][0]]
-                    r1 = reg[inst_lst2[i][1].lower()]
-                    r2 = reg[inst_lst2[i][2].lower()]
-                    r3 = reg[inst_lst2[i][3].lower()]
-                    machine_code.append(op+"00"+r1+r2+r3)
-                else:
-                    print(f'Error in line {i+1}: Undefined Register name')
-                    flag_a = False
-                    break
-            else:
-                print(f'Error in line {i+1}: Wrong Instruction syntax for {inst_lst[i][0].lower()}')
-                flag_a = False
-                break
+    if opcode=="10011" or opcode=="10111" or opcode=="11101":
+        #type_c
+        reg1=i[10:13]
+        reg2=i[13:16]
+        if opcode=="11101":     # Invert
+            notval1=""
+            for i in range(16):
+                notval1+=perform_not(regval[regnum[reg1]])
+            regval[regnum[reg2]]=notval1
+        elif opcode=="10111":   # divide
+            val1=bintodec(int(regval[regnum[reg1]]))
+            val2=bintodec(int(regval[regnum[reg2]]))
+            q=val1//val2
+            r=val1%val2
+            q=str(dectobin(q))
+            r=str(dectobin(r))
+            regval["r0"]=("0"*(16-len(q)))+q
+            regval["r1"]=("0"*(16-len(r)))+r
+        elif opcode=="10011":   # mov
+            regval[regnum[reg2]]=regval[regnum[reg1]]
 
-        if inst_lst2[i][0].lower() == "movf":
-            flag_f = True
-            if len(inst_lst2[i]) == 3 or inst_lst2[i][2][0] == "$":
-                if inst_lst2[i][1].lower() in reg:
-                    if inst_lst2[i][2][1:] in floatNums.values():
-                        val = list(floatNums.keys())[list(floatNums.values()).index(str(inst_lst2[i][2][1:]))]
-                        op = "00010"
-                        r1 = reg[inst_lst2[i][1].lower()]
-                        machine_code.append(op + r1 + val)
-                    else:
-                        print(f'Error in line {i+1}: Number can not be represented in our system')
-                        flag_f = False
-                        break
-                else:
-                    print(f'Error in line {i+1}: Undefined Register name')
-                    flag_f = False
-                    break
-            else:
-                print(f'Error in line {i+1}: Wrong Instruction syntax for {inst_lst[i][0].lower()}')
-                flag_f = False
-                break
-                    
-        elif inst_lst2[i][0].lower() in type_b and inst_lst2[i][2][0]=="$":
-            flag_b = True
-            if len(inst_lst2[i])!=3:
-                flag_b=False
-                print(f'Error in line {i+1}: Number of operands exceed requirement')
-            if int(inst_lst2[i][1][1])<0 or int(inst_lst2[i][1][1])>6:
-                flag_b=False
-                print(f'Error in line {i+1}: Undefined Register name')
-            if inst_lst2[i][2].lower()=="flag":
-                flag_b=False
-                print(f'Error in line {i+1}: Illegal use of flags register')
-            Imm=inst_lst2[i][2][1:]
-            if int(Imm)<0 or int(Imm)>255:
-                flag_b=False
-                print(f'Error in line {i+1}: Illegal immediate values')
-            if flag_b:
-                op=type_b[inst_lst2[i][0].lower()]
-                r1=reg[(inst_lst2[i][1]).lower()]
-                Im=DecBin(Imm)
-                machine_code.append(op+r1+Im)
+    #type_d
+    if opcode=="10100" or opcode=="10101":
+        reg=i[5:8]
+        mem_addr = i[8:]
+        var_address = int(mem_addr,2)
+        if opcode=="10100":     #load instruction
+            regval[regnum[reg]] = memory[var_address]
+        if opcode=="10101":     #store instruction
+            memory[var_address] = regval[regnum[reg]]
         
-        elif inst_lst2[i][0] in type_c:
-            flag_c = True
-            if len(inst_lst2[i]) != 3:
-                flag_c=False
-                print(f'Error in line {i+1}: Number of operand exceed requirement')
-            if not(inst_lst2[i][2][1].isnumeric()) or int(inst_lst2[i][2][1])<0 or int(inst_lst2[i][2][1])>6:
-                flag_c=False
-                print(f'Error in line {i+1}: Undefined Register name')
-            if inst_lst2[i][1].lower()=="flags":
-                if inst_lst2[i][0]!="mov":
-                    flag_c=False
-                    print(f'Error in line {i+1}: Illegal use of flag register')
-            if inst_lst2[i][2].lower()=="flags":
-                flag_c=False
-                print(f'Error in line {i+1}: Illegal use of flag register')
-            if flag_c:
-                op=type_c[inst_lst2[i][0]]
-                r2=reg[(inst_lst2[i][2]).lower()]
-                if inst_lst2[i][1].lower()=="flags":
-                    r1="111"
-                else:
-                    r1=reg[(inst_lst2[i][1]).lower()]
-                machine_code.append(op+"00000"+r1+r2)  
-            
-        elif inst_lst2[i][0].lower() in type_d:  
-            flag_d = True
-            if len(inst_lst2[i]) == 3:
-                if inst_lst2[i][1].lower() in reg:
-                    if inst_lst2[i][2] in vars:
-                        op = type_d[inst_lst2[i][0]]
-                        r1 = reg[inst_lst2[i][1].lower()]
-                        mem = vars[inst_lst2[i][2].lower()]
-                        machine_code.append(op + r1 + mem)
-                    elif inst_lst2[i][2] in lab_dic:
-                        print(f'Error in line {i+1}: Use of labels as variables')
-                        flag_d = False
-                        break
-                    else:
-                        print(f'Error in line {i+1}: Use of undefined variable')
-                        flag_d = False
-                        break
-                else:
-                    print(f'Error in line {i+1}: Undefined Register name')
-                    flag_d = False
-                    break
+    elif opcode=="00000" or opcode=="00001" or opcode=="00010":     #floating point operations
+        r1 = i[7:10]
+        r2 = i[10:13]
+        r3 = i[13:16]
+        val1 = convertFloat(regval[regnum[r1]][8:])
+        val2 = convertFloat(regval[regnum[r2]][8:])
+        if opcode == "00000":       # addf
+            val3 = float(val1) + float(val2)
+            if str(float(val3)) not in floatNums.values():
+                regval[regnum[r3]] = "0000000000000000"
+                flag_dic["v"]="1"
             else:
-                print(f'Error in line {i+1}: Wrong Instruction syntax for {inst_lst[i][0].lower()}')
-                flag_d = False
-                break
-    
-        elif inst_lst2[i][0].lower() in type_e:
-            flag_e = True
-            if len(inst_lst2[i]) == 2:
-                if inst_lst2[i][1].lower() in lab_dic:
-                    op = type_e[inst_lst2[i][0]]
-                    mem = lab_dic[inst_lst2[i][1].lower()]
-                    machine_code.append(op+"000"+mem)
-                elif inst_lst2[i][1].lower() in vars:
-                    print(f'Error in line {i+1}: Use of variables as labels')
-                    flag_e = False
-                    break
-                else:
-                    print(f'Error in line {i+1}: Memory address is not a label')
-                    flag_e = False
-                    break
+                val = list(floatNums.keys())[list(floatNums.values()).index(str(float(val3)))]
+                regval[regnum[r3]] = "00000000" + val
+        elif opcode == "00001":         # subf
+            val3 = float(val1) - float(val2)
+            if str(float(val3)) not in floatNums.values():
+                regval[regnum[r3]] = "0000000000000000"
+                flag_dic["v"]="1"
             else:
-                print(f'Error in line {i+1}: Wrong Instruction syntax for {inst_lst2[i][0].lower()}')
-                flag_e = False
-                break
-        
-        elif (inst_lst2[i][0].lower() == "hlt") and (i < (len(inst_lst2) - 1)):
-            flag_h = False
-            print(f'Error in line {i+1}: Invalid hlt declaration')
-            break
-        
-        elif inst_lst2[i][0].lower() == "hlt":
-            machine_code.append("0101000000000000")
-            flag_h=True
+                val = list(floatNums.keys())[list(floatNums.values()).index(str(float(val3)))]
+                regval[regnum[r3]] = "00000000" + val
+        elif opcode == "00010":     # movf
+            r1 = i[5:8]
+            print("00000000" + i[8:])
+            regval[regnum[r1]] = "00000000" + i[8:]
 
-        elif inst_lst2[i][0].lower() not in opcode and (inst_lst2[i][0].lower() != "var") and (":" not in inst_lst2[i][0].lower()):
-            print(f'Error in line {i+1}: Not an instruction syntax')
-            flag = False
-            break
+    if opcode=="01010": #hlt
+        pass
+    return
 
-if flag and (len(inst_lst2[-1]) != 1 or inst_lst2[-1][0] != "hlt") and flag_h:
-    flag = False
-    print(f'Error in line {len(inst_lst2)}: Invalid/Absent hlt declaration')
-
-for i in range(len(vars)):
-    if inst_lst2[0][0].lower() == "var":
-        inst_lst2.remove(inst_lst2[0])
-
-for i in range(len(inst_lst2)):
-    if flag and inst_lst2[i][0] == "var":
-        flag = False
-        print(f'Error in line {vars_line[inst_lst2[i][1]]}: Variable not declared at the begining')
-    
-if len(machine_code) > 256:
-    print(f'Number of instructions exceed limit')
-    machine_code = machine_code[:256]
-if flag and flag_a and flag_b and flag_c and flag_d and flag_e and flag_h:
+def simulator(machine_code,regval,flag_dic, machine_code_dic, cycle):
     for i in machine_code:
-        sys.stdout.write(i)
-        sys.stdout.write("\n")
+        opcode=i[:5]
+        pc = list(machine_code_dic.keys())[list(machine_code_dic.values()).index(i)]
+        del machine_code_dic[pc]
+        if opcode=="11110":     # cmp instruction, all flags reset and then set
+            reset_flags()
+            reg1=i[10:13]
+            reg2=i[13:16]
+            val1=regval[regnum[reg1]]
+            val2=regval[regnum[reg2]]
+            if val1<val2: #less than
+                flag_dic["l"]=="1"
+            elif val1>val2: #greater than
+                flag_dic["g"]=="1"
+            elif val1==val2: #equal to
+                flag_dic["e"]=="1"
+
+        else:
+            if opcode=="01100" or "01101" or "01111" or "11111": #jump, flag not reset
+                mem_addr=i[8:]
+                label_addr=int(mem_addr,2)
+                
+                if opcode=="01100" and flag_dic["l"]==1: #less than
+                    printPCReg(pc)
+                    x_axis.append(cycle)
+                    y_axis.append(pc)
+                    cycle += 1
+                    new_machine_code=machine_code[label_addr:]
+                    simulator(new_machine_code,regval,flag_dic, machine_code_dic, cycle)
+                    break
+                if opcode=="01101" and flag_dic["g"]==1: #greater than
+                    printPCReg(pc)
+                    x_axis.append(cycle)
+                    y_axis.append(pc)
+                    cycle += 1
+                    new_machine_code=machine_code[label_addr:]
+                    simulator(new_machine_code,regval,flag_dic, machine_code_dic, cycle)
+                    break
+                if opcode=="01111" and flag_dic["e"]==1: # equal to
+                    printPCReg(pc)
+                    x_axis.append(cycle)
+                    y_axis.append(pc)
+                    cycle += 1
+                    new_machine_code=machine_code[label_addr:]
+                    simulator(new_machine_code,regval,flag_dic, machine_code_dic, cycle)
+                    break
+                if opcode=="11111": # uncondtional jump
+                    printPCReg(pc)
+                    x_axis.append(cycle)
+                    y_axis.append(pc)
+                    cycle += 1
+                    new_machine_code=machine_code[label_addr:]
+                    simulator(new_machine_code,regval,flag_dic, machine_code_dic, cycle)
+                    break
+            else: # any other instruction, flags reset
+                main(i)
+                reset_flags()
+        printPCReg(pc)
+        x_axis.append(cycle)
+        y_axis.append(pc)
+        cycle += 1
+    return
+
+regnum={"000":"r0" , "001":"r1" , "010":"r2" , "011":"r3" , "100":"r4" , "101":"r5" , "110":"r6"}
+regval={"r0":"0000000000000000" , "r1":"0000000000000000" , "r2":"0000000000000000" , "r3":"0000000000000000" , "r4":"0000000000000000" , "r5":"0000000000000000" , "r6":"0000000000000000"}
+flag_dic={"v":"0" , "l":"0" , "g":"0" , "e":"0"}
+# var_dic={}  # what to store? , see load n store
+
+simulator(machine_code,regval,flag_dic, machine_code_dic, cycle)
+
+# code for printing memory
+for i in machine_code:
+    sys.stdout.write(i)
+    sys.stdout.write("\n")
+for i in range(len(var_mem)):
+    sys.stdout.write(var_mem[i])
+    sys.stdout.write("\n")
+for i in range(zero_nums):
+    sys.stdout.write(zero_str)
+    sys.stdout.write("\n")
+
+print(x_axis, y_axis)
