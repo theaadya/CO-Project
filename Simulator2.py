@@ -96,7 +96,7 @@ def printPCReg(pc):
     for i in regval:
         sys.stdout.write(regval[i])
         sys.stdout.write(" ")
-    sys.stdout.write("000000000000")
+    sys.stdout.write("0" * 12)
     for i in flag_dic:
         sys.stdout.write(flag_dic[i])
     sys.stdout.write("\n")
@@ -167,7 +167,7 @@ def main(i):
                 val3+=perform_and(val1[i],val2[i])
             regval[regnum[reg3]]=val3
         
-    if opcode=="10010" or opcode=="11000" or opcode=="11001" or opcode == "00010":
+    if opcode=="10010" or opcode=="11000" or opcode=="11001":
         #type_b
         reg1=i[5:8]
         imm=i[8:]
@@ -224,22 +224,23 @@ def main(i):
         val2 = convertFloat(regval[regnum[r2]][8:])
         if opcode == "00000":       # addf
             val3 = float(val1) + float(val2)
-            if str(val3) not in floatNums.values():
+            if str(float(val3)) not in floatNums.values():
                 regval[regnum[r3]] = "0000000000000000"
                 flag_dic["v"]="1"
             else:
-                val = list(floatNums.keys())[list(floatNums.values()).index(str(val3))]
-                regval[regnum[r3]] = val
+                val = list(floatNums.keys())[list(floatNums.values()).index(str(float(val3)))]
+                regval[regnum[r3]] = "00000000" + val
         elif opcode == "00001":         # subf
             val3 = float(val1) - float(val2)
-            if str(val3) not in floatNums.values():
+            if str(float(val3)) not in floatNums.values():
                 regval[regnum[r3]] = "0000000000000000"
                 flag_dic["v"]="1"
             else:
-                val = list(floatNums.keys())[list(floatNums.values()).index(str(val3))]
-                regval[regnum[r3]] = val
+                val = list(floatNums.keys())[list(floatNums.values()).index(str(float(val3)))]
+                regval[regnum[r3]] = "00000000" + val
         elif opcode == "00010":     # movf
             r1 = i[5:8]
+            print("00000000" + i[8:])
             regval[regnum[r1]] = "00000000" + i[8:]
 
     if opcode=="01010": #hlt
@@ -301,7 +302,7 @@ def simulator(machine_code,regval,flag_dic, machine_code_dic, cycle):
                     new_machine_code=machine_code[label_addr:]
                     simulator(new_machine_code,regval,flag_dic, machine_code_dic, cycle)
                     break
-            else: #any other instruction, flags reset
+            else: # any other instruction, flags reset
                 main(i)
                 reset_flags()
         printPCReg(pc)
@@ -329,13 +330,3 @@ for i in range(zero_nums):
     sys.stdout.write("\n")
 
 print(x_axis, y_axis)
-# trial machine_code
-# 1000000100101110
-# 1000100100101110
-# 1111000000110000
-# 1000000100101110
-# 1111100000000111
-# 1000000100101110
-# 1000100100101110
-# 1000000100101110
-# 0101000000000000
